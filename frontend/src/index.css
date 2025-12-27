@@ -1,0 +1,9 @@
+/* Chrome, Edge, Safari */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) invert(1); /* makes it white */
+  cursor: pointer;
+  transition: all 0.3s;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.6;
+}

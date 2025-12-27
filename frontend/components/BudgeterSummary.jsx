@@ -1,13 +1,14 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { context } from "../context/MyContext";
 
 function BudgeterSummary() {
   const { currencySign } = useContext(context);
+  const [periods, setPeriods] = useState([`Month ${new Date().getMonth() + 1} of ${new Date().getFullYear()}`]);
 
   return (
-    <div className="max-w-5xl mx-auto border border-[gray] rounded mt-12 mb-8">
+    <div className="max-w-5xl mx-auto border border-[gray] rounded-xl overflow-hidden mt-12 mb-8">
       <div className="p-4 bg-black text-[white] rounded">
-        <h4 className="mb-3 text-center text-xl font-bold text-[khaki]">Spending Summary</h4>
+        <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">Spending Summary</h4>
 
         <div className="flex justify-between items-center mb-4">
           <div>
@@ -15,25 +16,24 @@ function BudgeterSummary() {
               <strong className="inline-block min-w-[125px] text-[white]">Total Income:</strong>
               <span className="text-lime-400">
                 {currencySign}
-                {/* {{ $total_income }} */}
+                {/* total_income */}
               </span>
             </div>
             <div>
               <strong className="inline-block min-w-[125px] text-[white]">Total Expense:</strong>
               <span className="text-orange-400">
                 {currencySign}
-                {/* {{ $total_expense }} */}
+                {/* total_expense */}
               </span>
             </div>
           </div>
           <div>
             <strong className="mr-2 text-[white]">Select Period:</strong>
-            <select className="period-select bg-black border border-[white] text-[white] rounded px-2 py-1">
+            <select className="period-select bg-black border border-[white] text-[white] rounded px-2 py-1 cursor-pointer">
               {/* Populate w/ periods */}
-              {/* @foreach ($periods as $k => $v)
-                {{-- <option value="{{ $periodsShort[$k] }}" {{ $k+1 == $month_now ? 'selected' : '' }}>{{ $v }}</option> --}}
-                <option value="{{ $periodsShort[$k] }}" {{ $periodsShort[$k] == $shown_period ? 'selected' : '' }}>{{ $v }}</option>
-            @endforeach */}
+              {periods.map((x, i) => {
+                return <option key={i}>{x}</option>;
+              })}
             </select>
           </div>
         </div>
