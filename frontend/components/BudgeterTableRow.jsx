@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { context } from "../context/MyContext";
+import axios from "axios";
 
 function BudgeterTableRow({ data }) {
-  const { currencySign } = useContext(context);
+  const { currencySign, setItemInEdit, setBudgeterEntries } = useContext(context);
 
   const categories = [
     ["Groceries", "groceries"],
@@ -22,11 +23,22 @@ function BudgeterTableRow({ data }) {
     ["Income", "income"],
   ];
 
-  const editEntry = () => {
-    console.log("editEntry");
-  };
-  const deleteEntry = () => {
-    console.log("deleteEntry");
+  const deleteEntry = async () => {
+    const answer = confirm(
+      `Are you sure you want to delete this entry?\n\n${currencySign}${data.amount} — ${
+        categories.find((x) => x.includes(data.category))[0]
+      }\n\nThis action cannot be undone.`
+    );
+    if (!answer) return;
+    try {
+      const response = await axios.delete(`http://localhost:8000/entries/${data._id}`);
+      if (response.status === 200) {
+        const allUserEntries = await axios.get("http://localhost:8000/entries"); // fetch all user entries
+        setBudgeterEntries(allUserEntries.data.documents);
+      }
+    } catch (error) {
+      console.error("OOPS!", error);
+    }
   };
 
   return (
@@ -37,20 +49,24 @@ function BudgeterTableRow({ data }) {
       </td>
 
       {/* Category */}
-      <td className="entry__category py-2 px-3 text-[12px]">{categories.find((x) => x.includes(data.category))[0]}</td>
+      <td className="entry__category py-2 px-3 text-[12px]" title={categories.find((x) => x.includes(data.category))[0]}>
+        {categories.find((x) => x.includes(data.category))[0]}
+      </td>
 
       {/* Date */}
       <td className="entry__date py-2 px-3 whitespace-nowrap">{data.date}</td>
 
       {/* Note */}
       <td className="py-2 px-3 w-[200px]">
-        <span className="entry__note text-[12px] leading-none">{data.note}</span>
+        <span className="entry__note text-[12px] leading-none" title={data.note}>
+          {data.note}
+        </span>
       </td>
 
       {/* Action Btns */}
       <td className="align-middle whitespace-nowrap pr-3">
         <button
-          onClick={editEntry}
+          onClick={() => setItemInEdit({ ...data })}
           className="inline-block opacity-50 hover:opacity-100 transition border border-[white] px-2 rounded text-sm btn-edit inline-block mr-2"
         >
           Edit

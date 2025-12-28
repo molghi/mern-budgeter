@@ -1,16 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { context } from "../context/MyContext";
 import { formSubmit } from "../utils/budgeterFormFunctions";
 
 function BudgeterForm() {
-  const { mode, setBudgeterEntries } = useContext(context);
-
-  const formFields = [
-    { name: "Amount", label: "amount", required: true, type: "input", subtype: "number", placeholder: "Enter amount" },
-    { name: "Category", label: "category", required: true, type: "select", subtype: "", placeholder: "" },
-    { name: "Date", label: "date", required: true, type: "input", subtype: "date", placeholder: "" },
-    { name: "Note (optional)", label: "note", required: false, type: "input", subtype: "text", placeholder: "Enter notes" },
-  ];
+  const { mode, setMode, setBudgeterEntries, itemInEdit, setItemInEdit } = useContext(context);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(
@@ -18,6 +11,16 @@ function BudgeterForm() {
   );
   const [note, setNote] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const firstInputRef = useRef(null);
+
+  // ============================================================================
+
+  const formFields = [
+    { name: "Amount", label: "amount", required: true, type: "input", subtype: "number", placeholder: "Enter amount" },
+    { name: "Category", label: "category", required: true, type: "select", subtype: "", placeholder: "" },
+    { name: "Date", label: "date", required: true, type: "input", subtype: "date", placeholder: "" },
+    { name: "Note (optional)", label: "note", required: false, type: "input", subtype: "text", placeholder: "Enter notes" },
+  ];
 
   const categories = [
     ["Groceries", "groceries"],
@@ -37,6 +40,8 @@ function BudgeterForm() {
     ["Income", "income"],
   ];
 
+  // ============================================================================
+
   const returnValue = (label) => {
     if (label === "amount") return amount;
     if (label === "category") return category;
@@ -50,13 +55,37 @@ function BudgeterForm() {
     if (label === "note") setNote(value);
   };
 
+  // ============================================================================
+
+  useEffect(() => {
+    if (itemInEdit) {
+      setMode("Edit");
+      setAmount(itemInEdit.amount);
+      setCategory(itemInEdit.category);
+      setDate(itemInEdit.date);
+      setNote(itemInEdit.note);
+    } else {
+      setMode("Add");
+      setAmount("");
+      setCategory("");
+      setDate(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`);
+      setNote("");
+    }
+    firstInputRef.current.focus();
+  }, [itemInEdit]);
+
+  // ============================================================================
+
   return (
     <>
       <div className="flex-[3] border border-[gray] rounded-xl overflow-hidden">
         <div className="p-4 bg-black text-[white] rounded">
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">{mode} Entry</h4>
 
-          <form className="space-y-4" onSubmit={(e) => formSubmit(e, amount, category, categories, date, note, setErrorMsg, setBudgeterEntries)}>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => formSubmit(e, amount, category, categories, date, note, setErrorMsg, setBudgeterEntries, mode, itemInEdit, setItemInEdit)}
+          >
             {/* Iterate thru & create form fields */}
             {formFields.map((entry, index) => (
               <div key={index}>
@@ -65,6 +94,7 @@ function BudgeterForm() {
                 </label>
                 {entry.type === "input" ? (
                   <input
+                    ref={entry.label === "amount" ? firstInputRef : null}
                     value={returnValue(entry.label)}
                     onChange={(e) => setValue(entry.label, e.target.value)}
                     required={entry.required}
@@ -88,14 +118,20 @@ function BudgeterForm() {
                       Select category
                     </option>
                     {categories.map((x, i) => (
-                      <option key={i}>{x[0]}</option>
+                      <option key={i} value={x[1]}>
+                        {x[0]}
+                      </option>
                     ))}
                   </select>
                 )}
               </div>
             ))}
 
-            <button className="w-full py-2 border border-[limegreen] text-[limegreen] transition duration-300 rounded hover:text-black hover:bg-[limegreen]">
+            <button
+              className={`w-full py-2 border transition duration-300 rounded hover:text-black ${
+                mode === "Add" ? "border-[limegreen] text-[limegreen] hover:bg-[limegreen]" : "border-[dodgerblue] text-[dodgerblue] hover:bg-[dodgerblue]"
+              }`}
+            >
               {mode}
             </button>
 

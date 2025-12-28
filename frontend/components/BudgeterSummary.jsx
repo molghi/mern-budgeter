@@ -1,9 +1,25 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { context } from "../context/MyContext";
+import axios from "axios";
 
 function BudgeterSummary() {
-  const { currencySign } = useContext(context);
+  const { currencySign, period, setPeriod } = useContext(context);
   const [periods, setPeriods] = useState([`Month ${new Date().getMonth() + 1} of ${new Date().getFullYear()}`]);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+
+  useEffect(() => {
+    const fetchPeriodTotals = async () => {
+      const response = await axios.get(`http://localhost:8000/summary?period=${period}`);
+      if (response.status === 200) {
+        if (response.data.totalExpenses.length > 0) setTotalExpenses(response.data.totalExpenses[0].totalAmount);
+        if (response.data.totalIncome.length > 0) setTotalIncome(response.data.totalIncome[0].totalAmount);
+      }
+    };
+    fetchPeriodTotals();
+  }, []);
+
+  // ============================================================================
 
   return (
     <div className="max-w-5xl mx-auto border border-[gray] rounded-xl overflow-hidden mt-12 mb-8">
@@ -15,15 +31,13 @@ function BudgeterSummary() {
             <div className="mb-2">
               <strong className="inline-block min-w-[125px] text-[white]">Total Income:</strong>
               <span className="text-lime-400">
-                {currencySign}
-                {/* total_income */}
+                {currencySign} {totalIncome}
               </span>
             </div>
             <div>
               <strong className="inline-block min-w-[125px] text-[white]">Total Expense:</strong>
               <span className="text-orange-400">
-                {currencySign}
-                {/* total_expense */}
+                {currencySign} {totalExpenses}
               </span>
             </div>
           </div>
