@@ -9,6 +9,9 @@ export default function ContextProvider({ children }) {
   const [budgeterEntries, setBudgeterEntries] = useState([]); // fetched from db
   const [itemInEdit, setItemInEdit] = useState(null); // either null or obj
   const [period, setPeriod] = useState(`${new Date().getMonth() + 1}-${new Date().getFullYear()}`); // month-year for Summary
+  const [totalsPerCategory, setTotalsPerCategory] = useState(null); // either null or obj
+  const [isLoading, setIsLoading] = useState(false);
+  const [flashMessageContent, setFlashMessageContent] = useState([]);
 
   return (
     <context.Provider
@@ -25,6 +28,12 @@ export default function ContextProvider({ children }) {
         setItemInEdit,
         period,
         setPeriod,
+        totalsPerCategory,
+        setTotalsPerCategory,
+        isLoading,
+        setIsLoading,
+        flashMessageContent,
+        setFlashMessageContent,
       }}
     >
       {children}

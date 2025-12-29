@@ -3,7 +3,7 @@ import { context } from "../context/MyContext";
 import { formSubmit } from "../utils/budgeterFormFunctions";
 
 function BudgeterForm() {
-  const { mode, setMode, setBudgeterEntries, itemInEdit, setItemInEdit } = useContext(context);
+  const { mode, setMode, setBudgeterEntries, itemInEdit, setItemInEdit, setIsLoading, setFlashMessageContent, period } = useContext(context);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(
@@ -84,7 +84,24 @@ function BudgeterForm() {
 
           <form
             className="space-y-4"
-            onSubmit={(e) => formSubmit(e, amount, category, categories, date, note, setErrorMsg, setBudgeterEntries, mode, itemInEdit, setItemInEdit)}
+            onSubmit={(e) =>
+              formSubmit(
+                e,
+                amount,
+                category,
+                categories,
+                date,
+                note,
+                setErrorMsg,
+                setBudgeterEntries,
+                mode,
+                itemInEdit,
+                setItemInEdit,
+                setIsLoading,
+                setFlashMessageContent,
+                period
+              )
+            }
           >
             {/* Iterate thru & create form fields */}
             {formFields.map((entry, index) => (

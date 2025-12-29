@@ -6,11 +6,7 @@ module.exports = async function getUserSummary(req, res) {
   const [month, year] = req.query.period.split("-").map((x) => +x);
   if (isNaN(month) || isNaN(year)) return res.status(400).json({ msg: "Period wasn't correctly formatted" });
 
-  // for the selected month-year period, get 4 things:
-  // -- total income - ✅ DONE
-  // -- total expenses - ✅ DONE
-  // -- existing periods in db
-  // -- Distribution of Expenses by Category
+  // for the selected month-year period, get these things:
 
   const totalIncome = await entryModel.aggregate([
     {
@@ -64,5 +60,31 @@ module.exports = async function getUserSummary(req, res) {
 
   // ============================================================================
 
-  return res.status(200).json({ msg: "Returning user summary", totalIncome, totalExpenses });
+  // Distribution of Expenses by Category:  get an array/obj of: category, its total sum
+  const categoryExpenses = await entryModel.aggregate([
+    {
+      $addFields: {
+        dateObj: { $dateFromString: { dateString: "$date" } }, // convert simplified date string to needed date string
+      },
+    },
+
+    {
+      $match: {
+        $expr: {
+          $and: [
+            { $eq: [{ $month: "$dateObj" }, month] }, // match by month
+            { $eq: [{ $year: "$dateObj" }, year] }, // match by year
+          ],
+        },
+      },
+    },
+
+    {
+      $group: { _id: "$category", totalAmount: { $sum: "$amount" } }, // get totals per category
+    },
+  ]);
+
+  // ============================================================================
+
+  return res.status(200).json({ msg: "Returning user summary", totalIncome, totalExpenses, categoryExpenses });
 };

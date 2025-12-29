@@ -6,13 +6,13 @@ import BudgeterForm from "./BudgeterForm";
 import BudgeterTable from "./BudgeterTable";
 
 function Budgeter() {
-  const { setBudgeterEntries } = useContext(context);
+  const { setBudgeterEntries, period } = useContext(context);
 
   useEffect(() => {
     // fetch all user entries
     const getUserEntries = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/entries");
+        const response = await axios.get(`http://localhost:8000/entries?period=${period}`);
         setBudgeterEntries(response.data.documents);
       } catch (error) {
         console.error("OOPS!", error);

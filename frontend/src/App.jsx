@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Auth from "../components/Auth";
 import Budgeter from "../components/Budgeter";
+import FlashMessage from "../components/FlashMessage";
 
 function App() {
   const { isLoggedIn } = useContext(context);
@@ -17,6 +18,8 @@ function App() {
           {!isLoggedIn ? <Auth /> : <Budgeter />}
         </main>
         <Footer />
+
+        <FlashMessage />
       </div>
     </>
   );

@@ -11,7 +11,22 @@ const isValidDate = (str) => {
 
 // ============================================================================
 
-const formSubmit = async (e, amount, category, categories, date, note, setErrorMsg, setBudgeterEntries, mode, itemInEdit, setItemInEdit) => {
+const formSubmit = async (
+  e,
+  amount,
+  category,
+  categories,
+  date,
+  note,
+  setErrorMsg,
+  setBudgeterEntries,
+  mode,
+  itemInEdit,
+  setItemInEdit,
+  setIsLoading,
+  setFlashMessageContent,
+  period
+) => {
   e.preventDefault();
   // validate
   if (!category.trim()) return setErrorMsg("Please set a category!");
@@ -33,21 +48,27 @@ const formSubmit = async (e, amount, category, categories, date, note, setErrorM
   try {
     if (mode === "Add") {
       // req to insert new entry
+      setIsLoading(true);
       const response = await axios.post("http://localhost:8000/entries", entry);
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get("http://localhost:8000/entries");
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`);
         setBudgeterEntries(allUserEntries.data.documents);
+        setFlashMessageContent(["success", "Entry added!"]);
       }
+      setIsLoading(false);
     }
     if (mode === "Edit") {
       // req to edit entry
+      setIsLoading(true);
       const response = await axios.put("http://localhost:8000/entries", { ...entry, id: itemInEdit._id });
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get("http://localhost:8000/entries");
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`);
         setBudgeterEntries(allUserEntries.data.documents);
+        setFlashMessageContent(["success", "Entry updated!"]);
       }
+      setIsLoading(false);
       setItemInEdit(null);
     }
   } catch (error) {
