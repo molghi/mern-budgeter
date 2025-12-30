@@ -1,3 +1,4 @@
+import { fetchPeriodTotals } from "./budgeterSummaryFunctions";
 import axios from "axios";
 
 const isValidDate = (str) => {
@@ -25,7 +26,10 @@ const formSubmit = async (
   setItemInEdit,
   setIsLoading,
   setFlashMessageContent,
-  period
+  period,
+  setTotalExpenses,
+  setTotalIncome,
+  setTotalsPerCategory
 ) => {
   e.preventDefault();
   // validate
@@ -57,6 +61,7 @@ const formSubmit = async (
         setFlashMessageContent(["success", "Entry added!"]);
       }
       setIsLoading(false);
+      setItemInEdit(null);
     }
     if (mode === "Edit") {
       // req to edit entry
@@ -73,6 +78,7 @@ const formSubmit = async (
     }
   } catch (error) {
     console.error("OOPS!", error);
+    setFlashMessageContent(["error", "Unfortunately, there was an error."]);
   }
 };
 

@@ -3,7 +3,7 @@ import { context } from "../context/MyContext";
 import axios from "axios";
 
 function BudgeterTableRow({ data }) {
-  const { currencySign, setItemInEdit, setBudgeterEntries } = useContext(context);
+  const { currencySign, setItemInEdit, setBudgeterEntries, setFlashMessageContent, period } = useContext(context);
 
   const categories = [
     ["Groceries", "groceries"],
@@ -23,6 +23,24 @@ function BudgeterTableRow({ data }) {
     ["Income", "income"],
   ];
 
+  const categoryColors = {
+    groceries: "#FF7F7F", // pink
+    housing: "#7FB3FF", // light blue
+    transport: "#7FFFBA", // mint green
+    dining: "#FFFF7F", // pastel yellow
+    medical: "#FFBF7F", // vibrant peach
+    entertainment: "#BF7FFF", // lavender
+    shopping: "#FF7FBF", // saturated magenta
+    education: "#7FFFBF", // aqua
+    subscriptions: "#FFDF7F", // soft orange
+    travel: "#7FCFFF", // bright sky blue
+    personal_care: "#FFDFBF", // apricot
+    gifts: "#BFFF7F", // light green
+    electronics: "#DF7FFF", // saturated lilac
+    misc_other: "#FF7F7F", // redder soft red
+    income: "limegreen",
+  };
+
   const deleteEntry = async () => {
     const answer = confirm(
       `Are you sure you want to delete this entry?\n\n${currencySign}${data.amount} — ${
@@ -33,11 +51,13 @@ function BudgeterTableRow({ data }) {
     try {
       const response = await axios.delete(`http://localhost:8000/entries/${data._id}`);
       if (response.status === 200) {
-        const allUserEntries = await axios.get("http://localhost:8000/entries"); // fetch all user entries
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`); // fetch all user entries
         setBudgeterEntries(allUserEntries.data.documents);
+        setFlashMessageContent(["success", "Entry deleted!"]);
       }
     } catch (error) {
       console.error("OOPS!", error);
+      setFlashMessageContent(["error", "Unfortunately, there was an error."]);
     }
   };
 
@@ -49,7 +69,10 @@ function BudgeterTableRow({ data }) {
       </td>
 
       {/* Category */}
-      <td className="entry__category py-2 px-3 text-[12px]" title={categories.find((x) => x.includes(data.category))[0]}>
+      <td
+        className={`entry__category py-2 px-3 text-[12px] text-[${categoryColors[data.category]}]`}
+        title={categories.find((x) => x.includes(data.category))[0]}
+      >
         {categories.find((x) => x.includes(data.category))[0]}
       </td>
 

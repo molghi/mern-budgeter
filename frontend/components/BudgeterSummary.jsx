@@ -4,7 +4,7 @@ import { changePeriod, fetchPeriodTotals } from "../utils/budgeterSummaryFunctio
 import spinnerImg from "../public/images/loading-spinner-2.png";
 
 function BudgeterSummary() {
-  const { currencySign, period, setPeriod, totalsPerCategory, setTotalsPerCategory, isLoading, setIsLoading } = useContext(context);
+  const { currencySign, period, setPeriod, totalsPerCategory, setTotalsPerCategory, isLoading, setIsLoading, budgeterEntries } = useContext(context);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
 
@@ -41,12 +41,12 @@ function BudgeterSummary() {
     gifts: "#BFFF7F", // light green
     electronics: "#DF7FFF", // saturated lilac
     misc_other: "#FF7F7F", // redder soft red
-    income: "#7FFFFF", // cyan
+    income: "limegreen",
   };
 
   useEffect(() => {
     fetchPeriodTotals(period, setTotalExpenses, setTotalIncome, setTotalsPerCategory, setIsLoading);
-  }, []);
+  }, [budgeterEntries, period]);
 
   // ============================================================================
 

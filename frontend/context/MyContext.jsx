@@ -12,6 +12,8 @@ export default function ContextProvider({ children }) {
   const [totalsPerCategory, setTotalsPerCategory] = useState(null); // either null or obj
   const [isLoading, setIsLoading] = useState(false);
   const [flashMessageContent, setFlashMessageContent] = useState([]);
+  const [username, setUsername] = useState("Jackie Boy");
+  const [shownMainBlock, setShownMainBlock] = useState(0); // 0 for budgeter/tracker, 1 for planner
 
   return (
     <context.Provider
@@ -34,6 +36,10 @@ export default function ContextProvider({ children }) {
         setIsLoading,
         flashMessageContent,
         setFlashMessageContent,
+        username,
+        setUsername,
+        shownMainBlock,
+        setShownMainBlock,
       }}
     >
       {children}

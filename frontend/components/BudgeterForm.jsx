@@ -3,7 +3,20 @@ import { context } from "../context/MyContext";
 import { formSubmit } from "../utils/budgeterFormFunctions";
 
 function BudgeterForm() {
-  const { mode, setMode, setBudgeterEntries, itemInEdit, setItemInEdit, setIsLoading, setFlashMessageContent, period } = useContext(context);
+  const {
+    mode,
+    setMode,
+    budgeterEntries,
+    setBudgeterEntries,
+    itemInEdit,
+    setItemInEdit,
+    setIsLoading,
+    setFlashMessageContent,
+    period,
+    setTotalExpenses,
+    setTotalIncome,
+    setTotalsPerCategory,
+  } = useContext(context);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(
@@ -64,7 +77,8 @@ function BudgeterForm() {
       setCategory(itemInEdit.category);
       setDate(itemInEdit.date);
       setNote(itemInEdit.note);
-    } else {
+    }
+    if (itemInEdit === null) {
       setMode("Add");
       setAmount("");
       setCategory("");
@@ -72,14 +86,14 @@ function BudgeterForm() {
       setNote("");
     }
     firstInputRef.current.focus();
-  }, [itemInEdit]);
+  }, [itemInEdit, budgeterEntries]);
 
   // ============================================================================
 
   return (
     <>
-      <div className="flex-[3] border border-[gray] rounded-xl overflow-hidden">
-        <div className="p-4 bg-black text-[white] rounded">
+      <div className="flex-[3] border border-[gray] rounded-xl overflow-hidden self-start">
+        <div className="p-4 pb-8 bg-black text-[white] rounded">
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">{mode} Entry</h4>
 
           <form
@@ -99,7 +113,10 @@ function BudgeterForm() {
                 setItemInEdit,
                 setIsLoading,
                 setFlashMessageContent,
-                period
+                period,
+                setTotalExpenses,
+                setTotalIncome,
+                setTotalsPerCategory
               )
             }
           >

@@ -7,7 +7,7 @@ import Budgeter from "../components/Budgeter";
 import FlashMessage from "../components/FlashMessage";
 
 function App() {
-  const { isLoggedIn } = useContext(context);
+  const { isLoggedIn, shownMainBlock } = useContext(context);
 
   return (
     <>
@@ -15,7 +15,14 @@ function App() {
         <main className="flex-1">
           <Header />
 
-          {!isLoggedIn ? <Auth /> : <Budgeter />}
+          {/* if not logged in, show Auth block */}
+          {!isLoggedIn && <Auth />}
+
+          {/* if logged in and selected main block is Tracker/Budgeter (0), show Tracker/Budgeter */}
+          {isLoggedIn && shownMainBlock === 0 && <Budgeter />}
+
+          {/* if logged in and selected main block is Planner (1), show Planner */}
+          {isLoggedIn && shownMainBlock === 1 && <div className="text-white text-center my-10">show Planner</div>}
         </main>
         <Footer />
 
