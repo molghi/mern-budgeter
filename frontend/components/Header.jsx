@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { context } from "../context/MyContext";
 
 function Header() {
-  const { isLoggedIn, username, shownMainBlock, setShownMainBlock } = useContext(context);
+  const { isLoggedIn, username, userEmail, shownMainBlock, setShownMainBlock } = useContext(context);
 
   return (
     <header className="bg-gray-900 text-white">
@@ -13,7 +13,11 @@ function Header() {
         </div>
 
         {/* Current user name */}
-        {username && <div className="text-sm transition duration-300 opacity-50 hover:opacity-100">{username}'s Dashboard</div>}
+        {isLoggedIn && username && (
+          <div title={userEmail && `Logged in as ${userEmail}`} className="text-sm transition duration-300 opacity-50 hover:opacity-100 uppercase">
+            {username.toUpperCase()}'s Dashboard
+          </div>
+        )}
 
         {/* Btns */}
         <div className="flex gap-4">

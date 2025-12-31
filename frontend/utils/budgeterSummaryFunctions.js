@@ -30,7 +30,7 @@ const changePeriod = (flag, period, setPeriod) => {
 
 const fetchPeriodTotals = async (period, setTotalExpenses, setTotalIncome, setTotalsPerCategory, setIsLoading) => {
   setIsLoading(true);
-  const response = await axios.get(`http://localhost:8000/summary?period=${period}`);
+  const response = await axios.get(`http://localhost:8000/summary?period=${period}`, { withCredentials: true });
   setIsLoading(false);
   if (response.status === 200) {
     if (response.data.totalExpenses.length > 0) {

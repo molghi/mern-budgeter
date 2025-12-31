@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const context = createContext();
 
 export default function ContextProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currencySign, setCurrencySign] = useState("$");
   const [mode, setMode] = useState("Add"); // either Add or Edit
   const [budgeterEntries, setBudgeterEntries] = useState([]); // fetched from db
@@ -13,6 +13,7 @@ export default function ContextProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [flashMessageContent, setFlashMessageContent] = useState([]);
   const [username, setUsername] = useState("Jackie Boy");
+  const [userEmail, setUserEmail] = useState("");
   const [shownMainBlock, setShownMainBlock] = useState(0); // 0 for budgeter/tracker, 1 for planner
 
   return (
@@ -40,6 +41,8 @@ export default function ContextProvider({ children }) {
         setUsername,
         shownMainBlock,
         setShownMainBlock,
+        userEmail,
+        setUserEmail,
       }}
     >
       {children}

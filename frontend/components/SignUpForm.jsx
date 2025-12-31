@@ -1,14 +1,32 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { context } from "../context/MyContext";
+import axios from "axios";
 
 function SignUpForm() {
+  const { setFlashMessageContent, setIsLoggedIn, setUsername, setUserEmail } = useContext(context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef();
 
-  const signUp = (e) => {
+  const signUp = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/signup", { email, password, passwordConfirm }, { withCredentials: true });
+      // axios.defaults.withCredentials = true;
+      // axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`; // include token in subsequent Axios headers
+      if (response.status === 200 || response.status === 201) {
+        setErrorMsg("");
+        setFlashMessageContent(["success", "User profile created!"]);
+        setIsLoggedIn(true);
+        setUsername(response.data.name);
+        setUserEmail(response.data.email);
+      }
+    } catch (error) {
+      console.error("OOPS!", error);
+      setErrorMsg(error.response.data.msg);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +70,10 @@ function SignUpForm() {
         />
 
         {/* Btn */}
-        <button type="submit" className="block mt-4 px-4 py-2 bg-green-500 text-gray-900 font-semibold rounded transition duration-200 hover:opacity-60">
+        <button
+          type="submit"
+          className="block mt-4 px-4 py-2 bg-green-500 text-gray-900 font-semibold rounded transition duration-200 hover:opacity-60 active:opacity-40"
+        >
           Sign Up
         </button>
 

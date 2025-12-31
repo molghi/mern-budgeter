@@ -53,10 +53,10 @@ const formSubmit = async (
     if (mode === "Add") {
       // req to insert new entry
       setIsLoading(true);
-      const response = await axios.post("http://localhost:8000/entries", entry);
+      const response = await axios.post("http://localhost:8000/entries", entry, { withCredentials: true });
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`);
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, { withCredentials: true });
         setBudgeterEntries(allUserEntries.data.documents);
         setFlashMessageContent(["success", "Entry added!"]);
       }
@@ -66,10 +66,10 @@ const formSubmit = async (
     if (mode === "Edit") {
       // req to edit entry
       setIsLoading(true);
-      const response = await axios.put("http://localhost:8000/entries", { ...entry, id: itemInEdit._id });
+      const response = await axios.put("http://localhost:8000/entries", { ...entry, id: itemInEdit._id }, { withCredentials: true });
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`);
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, { withCredentials: true });
         setBudgeterEntries(allUserEntries.data.documents);
         setFlashMessageContent(["success", "Entry updated!"]);
       }

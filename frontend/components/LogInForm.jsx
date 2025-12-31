@@ -41,7 +41,10 @@ function LogInForm() {
         />
 
         {/* Btn */}
-        <button type="submit" className="block mt-4 px-4 py-2 bg-blue-500 text-gray-900 font-semibold rounded transition duration-200 hover:opacity-60">
+        <button
+          type="submit"
+          className="block mt-4 px-4 py-2 bg-blue-500 text-gray-900 font-semibold rounded transition duration-200 hover:opacity-60 active:opacity-40"
+        >
           Log In
         </button>
 

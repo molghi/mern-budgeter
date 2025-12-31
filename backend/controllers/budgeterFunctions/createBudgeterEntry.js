@@ -51,7 +51,8 @@ module.exports = async function createBudgeterEntry(req, res) {
 
   // compose obj w/ all necessary props
   const newEntry = {
-    userId: "64f1c2a9b3e4d5f6a7b8c9d0", // HARDCODED
+    // userId: "64f1c2a9b3e4d5f6a7b8c9d0", // HARDCODED
+    userId: req.user.id,
     amount: +amount.trim(),
     category: category.trim(),
     date: date.trim(),

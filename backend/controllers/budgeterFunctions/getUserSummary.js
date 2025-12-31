@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const entryModel = require("../../models/entryModel");
 
 module.exports = async function getUserSummary(req, res) {
@@ -17,6 +18,8 @@ module.exports = async function getUserSummary(req, res) {
 
     {
       $match: {
+        // userId: req.user.id,
+        userId: new mongoose.Types.ObjectId(req.user.id),
         category: "Income", // get only entries where category == "Income"
         $expr: {
           $and: [
@@ -43,6 +46,8 @@ module.exports = async function getUserSummary(req, res) {
 
     {
       $match: {
+        // userId: req.user.id,
+        userId: new mongoose.Types.ObjectId(req.user.id),
         category: { $ne: "Income" }, // get only entries where category != "Income"
         $expr: {
           $and: [
@@ -70,6 +75,8 @@ module.exports = async function getUserSummary(req, res) {
 
     {
       $match: {
+        // userId: req.user.id,
+        userId: new mongoose.Types.ObjectId(req.user.id),
         $expr: {
           $and: [
             { $eq: [{ $month: "$dateObj" }, month] }, // match by month
