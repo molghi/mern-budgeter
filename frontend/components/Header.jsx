@@ -1,8 +1,34 @@
 import { useContext } from "react";
 import { context } from "../context/MyContext";
+import axios from "axios";
 
 function Header() {
-  const { isLoggedIn, username, userEmail, shownMainBlock, setShownMainBlock } = useContext(context);
+  const {
+    isLoggedIn,
+    username,
+    userEmail,
+    shownMainBlock,
+    setShownMainBlock,
+    setFlashMessageContent,
+    setIsLoggedIn,
+    setUsername,
+    setUserEmail,
+  } = useContext(context);
+
+  const logOut = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/logout", { withCredentials: true });
+      if (response.status === 200 && response.data.msg === "User logged out!") {
+        setFlashMessageContent(["success", "User logged out!"]);
+        setIsLoggedIn(false);
+        setUsername("");
+        setUserEmail("");
+      }
+    } catch (error) {
+      console.log("OOPS!", error);
+      setFlashMessageContent(["error", "Some error happened!"]);
+    }
+  };
 
   return (
     <header className="bg-gray-900 text-white">
@@ -14,7 +40,10 @@ function Header() {
 
         {/* Current user name */}
         {isLoggedIn && username && (
-          <div title={userEmail && `Logged in as ${userEmail}`} className="text-sm transition duration-300 opacity-50 hover:opacity-100 uppercase">
+          <div
+            title={userEmail && `Logged in as ${userEmail}`}
+            className="text-sm transition duration-300 opacity-50 hover:opacity-100 uppercase"
+          >
             {username.toUpperCase()}'s Dashboard
           </div>
         )}
@@ -45,7 +74,12 @@ function Header() {
                 </button>
               )}
 
-              <button className="bg-gray-700 transition duration-200 hover:opacity-100 opacity-60 text-white font-bold py-2 px-4 rounded">Log Out</button>
+              <button
+                onClick={logOut}
+                className="bg-gray-700 transition duration-200 hover:opacity-100 opacity-60 text-white font-bold py-2 px-4 rounded"
+              >
+                Log Out
+              </button>
             </>
           ) : (
             <>

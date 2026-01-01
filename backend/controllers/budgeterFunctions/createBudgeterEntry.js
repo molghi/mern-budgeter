@@ -20,6 +20,7 @@ const categories = [
 
 // ============================================================================
 
+// helper fn
 const isValidDate = (str) => {
   if (!/^(197\d|198\d|199\d|20\d{2})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(str)) {
     return false;
@@ -32,10 +33,10 @@ const isValidDate = (str) => {
 // ============================================================================
 
 module.exports = async function createBudgeterEntry(req, res) {
-  // get data
+  // get submitted data
   const { amount, category, date, note } = req.body;
 
-  // validate (optionally return errors)
+  // VALIDATE (and return errors)
   // -- amount must be positive number
   if (Number(amount) === 0 || isNaN(Number(amount)) || Number(amount) < 0) {
     return res.status(400).json({ msg: "Amount must be positive number" });
@@ -52,7 +53,7 @@ module.exports = async function createBudgeterEntry(req, res) {
   // compose obj w/ all necessary props
   const newEntry = {
     // userId: "64f1c2a9b3e4d5f6a7b8c9d0", // HARDCODED
-    userId: req.user.id,
+    userId: req.user.id, // from auth middleware
     amount: +amount.trim(),
     category: category.trim(),
     date: date.trim(),

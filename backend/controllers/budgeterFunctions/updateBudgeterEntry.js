@@ -16,7 +16,7 @@ module.exports = async function updateBudgeterEntry(req, res) {
           note: req.body.note.trim(),
         },
         { new: true }
-      );
+      ); // return updated doc
 
       return res.status(200).json({ msg: "Update successful!", document: response });
     } else {

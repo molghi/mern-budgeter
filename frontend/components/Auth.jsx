@@ -19,7 +19,9 @@ function Auth() {
         </button>
         <button
           onClick={() => setActiveForm(1)}
-          className={`px-4 py-2 bg-blue-700 rounded-tr rounded-br transition duration-200 ${activeForm === 1 ? "opacity-100" : "opacity-50 hover:opacity-100"}`}
+          className={`px-4 py-2 bg-blue-700 rounded-tr rounded-br transition duration-200 ${
+            activeForm === 1 ? "opacity-100" : "opacity-50 hover:opacity-100"
+          }`}
         >
           Log In
         </button>

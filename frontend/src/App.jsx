@@ -8,7 +8,16 @@ import Budgeter from "../components/Budgeter";
 import FlashMessage from "../components/FlashMessage";
 
 function App() {
-  const { isLoggedIn, shownMainBlock, setBudgeterEntries, period, setFlashMessageContent, setIsLoggedIn, setUsername, setUserEmail } = useContext(context);
+  const {
+    isLoggedIn,
+    shownMainBlock,
+    setBudgeterEntries,
+    period,
+    setFlashMessageContent,
+    setIsLoggedIn,
+    setUsername,
+    setUserEmail,
+  } = useContext(context);
 
   useEffect(() => {
     // fetch all user entries for selected period

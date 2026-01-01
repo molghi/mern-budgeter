@@ -26,10 +26,7 @@ const formSubmit = async (
   setItemInEdit,
   setIsLoading,
   setFlashMessageContent,
-  period,
-  setTotalExpenses,
-  setTotalIncome,
-  setTotalsPerCategory
+  period
 ) => {
   e.preventDefault();
   // validate
@@ -37,7 +34,8 @@ const formSubmit = async (
   if (+amount === 0) return setErrorMsg("Please set a valid amount!");
   if (+amount < 0) return setErrorMsg("Please set a positive amount! (Even for expenses.)");
   if (!date.trim()) return setErrorMsg("Please set a valid date!");
-  if (!isValidDate(date.trim())) return setErrorMsg("Please set a valid date! Years: 1970–2099, Months: 01–12, Days: 01–31.");
+  if (!isValidDate(date.trim()))
+    return setErrorMsg("Please set a valid date! Years: 1970–2099, Months: 01–12, Days: 01–31.");
 
   setErrorMsg("");
   // compose obj
@@ -56,7 +54,9 @@ const formSubmit = async (
       const response = await axios.post("http://localhost:8000/entries", entry, { withCredentials: true });
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, { withCredentials: true });
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, {
+          withCredentials: true,
+        });
         setBudgeterEntries(allUserEntries.data.documents);
         setFlashMessageContent(["success", "Entry added!"]);
       }
@@ -66,10 +66,16 @@ const formSubmit = async (
     if (mode === "Edit") {
       // req to edit entry
       setIsLoading(true);
-      const response = await axios.put("http://localhost:8000/entries", { ...entry, id: itemInEdit._id }, { withCredentials: true });
+      const response = await axios.put(
+        "http://localhost:8000/entries",
+        { ...entry, id: itemInEdit._id },
+        { withCredentials: true }
+      );
       if (response.status === 200) {
         // fetch all user entries
-        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, { withCredentials: true });
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, {
+          withCredentials: true,
+        });
         setBudgeterEntries(allUserEntries.data.documents);
         setFlashMessageContent(["success", "Entry updated!"]);
       }

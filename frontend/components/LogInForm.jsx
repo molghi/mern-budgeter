@@ -1,13 +1,29 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import axios from "axios";
+import { context } from "../context/MyContext";
 
 function LogInForm() {
+  const { setFlashMessageContent, setIsLoggedIn, setUsername, setUserEmail } = useContext(context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef();
 
-  const signUp = (e) => {
+  const logIn = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/login", { email, password }, { withCredentials: true });
+      if (response.status === 200) {
+        setErrorMsg("");
+        setFlashMessageContent(["success", "User logged in!"]);
+        setIsLoggedIn(true);
+        setUsername(response.data.name);
+        setUserEmail(response.data.email);
+      }
+    } catch (error) {
+      console.log("OOPS!", error);
+      setErrorMsg(error.response.data.msg);
+    }
   };
 
   useEffect(() => {
@@ -17,7 +33,7 @@ function LogInForm() {
   return (
     <>
       {/* Form */}
-      <form className="flex flex-col gap-4" onSubmit={signUp}>
+      <form className="flex flex-col gap-4" onSubmit={logIn}>
         {/* Email */}
         <input
           ref={inputRef}

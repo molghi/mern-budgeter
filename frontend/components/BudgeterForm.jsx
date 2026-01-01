@@ -20,7 +20,10 @@ function BudgeterForm() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(
-    `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
+    `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date()
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`
   );
   const [note, setNote] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -32,7 +35,14 @@ function BudgeterForm() {
     { name: "Amount", label: "amount", required: true, type: "input", subtype: "number", placeholder: "Enter amount" },
     { name: "Category", label: "category", required: true, type: "select", subtype: "", placeholder: "" },
     { name: "Date", label: "date", required: true, type: "input", subtype: "date", placeholder: "" },
-    { name: "Note (optional)", label: "note", required: false, type: "input", subtype: "text", placeholder: "Enter notes" },
+    {
+      name: "Note (optional)",
+      label: "note",
+      required: false,
+      type: "input",
+      subtype: "text",
+      placeholder: "Enter notes",
+    },
   ];
 
   const categories = [
@@ -82,7 +92,12 @@ function BudgeterForm() {
       setMode("Add");
       setAmount("");
       setCategory("");
-      setDate(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`);
+      setDate(
+        `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date()
+          .getDate()
+          .toString()
+          .padStart(2, "0")}`
+      );
       setNote("");
     }
     firstInputRef.current.focus();
@@ -163,7 +178,9 @@ function BudgeterForm() {
 
             <button
               className={`w-full py-2 border transition duration-300 rounded hover:text-black ${
-                mode === "Add" ? "border-[limegreen] text-[limegreen] hover:bg-[limegreen]" : "border-[dodgerblue] text-[dodgerblue] hover:bg-[dodgerblue]"
+                mode === "Add"
+                  ? "border-[limegreen] text-[limegreen] hover:bg-[limegreen]"
+                  : "border-[dodgerblue] text-[dodgerblue] hover:bg-[dodgerblue]"
               }`}
             >
               {mode}

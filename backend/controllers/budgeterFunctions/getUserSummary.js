@@ -18,8 +18,7 @@ module.exports = async function getUserSummary(req, res) {
 
     {
       $match: {
-        // userId: req.user.id,
-        userId: new mongoose.Types.ObjectId(req.user.id),
+        userId: new mongoose.Types.ObjectId(req.user.id), // need ObjectId, not plain string
         category: "Income", // get only entries where category == "Income"
         $expr: {
           $and: [

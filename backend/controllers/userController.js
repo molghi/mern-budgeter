@@ -1,7 +1,7 @@
 const signUp = require("./userFunctions/signUp");
 
-// const logout = require("./userFunctions/logout");
+const logIn = require("./userFunctions/logIn");
 
-// const login = require("./userFunctions/login");
+const logOut = require("./userFunctions/logOut");
 
-module.exports = { signUp };
+module.exports = { signUp, logIn, logOut };

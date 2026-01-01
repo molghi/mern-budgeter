@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 module.exports = async function signUp(req, res) {
   // get sent data
   const { email, password, passwordConfirm } = req.body;
+
   if (!email.trim() || !password.trim() || !passwordConfirm.trim()) {
     return res.status(400).json({ msg: "Request body incomplete. Required: email, password, password confirmation." });
   }

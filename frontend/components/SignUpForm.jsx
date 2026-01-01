@@ -13,9 +13,12 @@ function SignUpForm() {
   const signUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/signup", { email, password, passwordConfirm }, { withCredentials: true });
+      const response = await axios.post(
+        "http://localhost:8000/signup",
+        { email, password, passwordConfirm },
+        { withCredentials: true }
+      );
       // axios.defaults.withCredentials = true;
-      // axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`; // include token in subsequent Axios headers
       if (response.status === 200 || response.status === 201) {
         setErrorMsg("");
         setFlashMessageContent(["success", "User profile created!"]);

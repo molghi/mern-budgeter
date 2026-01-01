@@ -64,7 +64,9 @@ function BudgeterTableRow({ data }) {
   return (
     <tr className="entry text-sm text-[white] hover:bg-[#222] transition duration-300" data-id={data._id}>
       {/* Amount */}
-      <td className={`entry__amount py-3 px-3 {{ $entry->category !== 'income' ? 'text-[coral]' : 'text-[limegreen]' }}`}>
+      <td
+        className={`entry__amount py-3 px-3 {{ $entry->category !== 'income' ? 'text-[coral]' : 'text-[limegreen]' }}`}
+      >
         {currencySign} {data.amount}
       </td>
 
@@ -94,7 +96,10 @@ function BudgeterTableRow({ data }) {
         >
           Edit
         </button>
-        <button onClick={deleteEntry} className="opacity-50 hover:opacity-100 transition border border-[red] text-[red] px-2 rounded text-sm btn-delete">
+        <button
+          onClick={deleteEntry}
+          className="opacity-50 hover:opacity-100 transition border border-[red] text-[red] px-2 rounded text-sm btn-delete"
+        >
           Delete
         </button>
       </td>
