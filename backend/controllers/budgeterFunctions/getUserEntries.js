@@ -30,9 +30,12 @@ module.exports = async function getUserEntries(req, res) {
       date: { $gte: periodStart, $lte: periodEnd }, // this is less involved than the commented out right above
     });
 
-    return res
-      .status(200)
-      .json({ msg: "Returning user entries", documents: response, name: req.user.name, email: req.user.email });
+    return res.status(200).json({
+      msg: "Returning user entries",
+      documents: response,
+      name: req.user.name,
+      email: req.user.email,
+    });
   } catch (error) {
     console.error("OOPS!", error);
     return res.status(400).json({ msg: "Some error occurred", error });

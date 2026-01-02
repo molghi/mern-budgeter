@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Auth from "../components/Auth";
 import Budgeter from "../components/Budgeter";
+import Planner from "../components/Planner";
 import FlashMessage from "../components/FlashMessage";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     setIsLoggedIn,
     setUsername,
     setUserEmail,
+    setUserBalance,
   } = useContext(context);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-[100vh]">
-        <main className="flex-1">
+        <main className="flex-1 pb-[100px]">
           <Header />
 
           {/* if not logged in, show Auth block */}
@@ -51,7 +53,7 @@ function App() {
           {isLoggedIn && shownMainBlock === 0 && <Budgeter />}
 
           {/* if logged in and selected main block is Planner (1), show Planner */}
-          {isLoggedIn && shownMainBlock === 1 && <div className="text-white text-center my-10">show Planner</div>}
+          {isLoggedIn && shownMainBlock === 1 && <Planner />}
         </main>
         <Footer />
 

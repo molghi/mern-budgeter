@@ -19,6 +19,11 @@ const userModel = mongoose.Schema(
       type: String,
       required: true,
     },
+    balance: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

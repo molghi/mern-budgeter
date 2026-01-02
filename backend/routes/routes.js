@@ -7,7 +7,7 @@ const {
   deleteBudgeterEntry,
   getUserSummary,
 } = require("../controllers/budgeterController");
-const { signUp, logIn, logOut } = require("../controllers/userController");
+const { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 
 // ============================================================================
@@ -39,6 +39,15 @@ router.post("/login", logIn);
 
 // log out
 router.get("/logout", auth, logOut);
+
+//
+
+// ACTIONS
+// update current balance
+router.post("/balance", auth, updateCurrentBalance);
+
+// fetch current balance
+router.get("/balance", auth, fetchCurrentBalance);
 
 // ============================================================================
 

@@ -14,7 +14,10 @@ export default function ContextProvider({ children }) {
   const [flashMessageContent, setFlashMessageContent] = useState([]);
   const [username, setUsername] = useState("Jackie Boy");
   const [userEmail, setUserEmail] = useState("");
-  const [shownMainBlock, setShownMainBlock] = useState(0); // 0 for budgeter/tracker, 1 for planner
+  const [shownMainBlock, setShownMainBlock] = useState(1); // 0 for budgeter/tracker, 1 for planner
+  const [plannerForm, setPlannerForm] = useState(null); // form to Add/Edit event in Planner. Values: null (do not show), 'add', 'edit'.
+  const [userBalance, setUserBalance] = useState(0);
+  const [clickedDate, setClickedDate] = useState(null);
 
   return (
     <context.Provider
@@ -43,6 +46,12 @@ export default function ContextProvider({ children }) {
         setShownMainBlock,
         userEmail,
         setUserEmail,
+        plannerForm,
+        setPlannerForm,
+        userBalance,
+        setUserBalance,
+        clickedDate,
+        setClickedDate,
       }}
     >
       {children}

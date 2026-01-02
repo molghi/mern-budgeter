@@ -4,4 +4,8 @@ const logIn = require("./userFunctions/logIn");
 
 const logOut = require("./userFunctions/logOut");
 
-module.exports = { signUp, logIn, logOut };
+const updateCurrentBalance = require("./userFunctions/updateCurrentBalance");
+
+const fetchCurrentBalance = require("./userFunctions/fetchCurrentBalance");
+
+module.exports = { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance };
