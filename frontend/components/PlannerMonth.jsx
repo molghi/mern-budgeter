@@ -3,7 +3,7 @@ import PlannerMonthTable from "./PlannerMonthTable";
 import { useContext } from "react";
 
 function PlannerMonth({ index, startPeriod }) {
-  const { setPlannerForm, setClickedDate } = useContext(context);
+  const { setPlannerForm, setClickedDate, highlightedDay } = useContext(context);
   const [startPeriodMonth, startPeriodYear] = startPeriod.split("-").map((x) => +x);
 
   let monthToRender, yearToRender;
@@ -134,7 +134,16 @@ function PlannerMonth({ index, startPeriod }) {
               isFirstMonthToShow && i + 1 === currentDate
                 ? `bg-[${getSeasonColor(monthToRender)}] filter saturate-150 text-[black]`
                 : ""
-            }`}
+            }
+
+            ${
+              highlightedDay ===
+              `${yearToRender}-${monthToRender.toString().padStart(2, "0")}-${(i + 1).toString().padStart(2, "0")}`
+                ? `bg-[${getSeasonColor(monthToRender)}] text-black`
+                : ""
+            }
+            
+            `}
             >
               {i + 1}
             </div>
@@ -143,7 +152,7 @@ function PlannerMonth({ index, startPeriod }) {
       </div>
 
       {/* month table */}
-      <PlannerMonthTable />
+      <PlannerMonthTable monthIndex={index} monthToRender={monthToRender} yearToRender={yearToRender} />
     </div>
   );
 }

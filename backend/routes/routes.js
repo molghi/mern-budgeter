@@ -9,6 +9,7 @@ const {
 } = require("../controllers/budgeterController");
 const { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance } = require("../controllers/userController");
 const auth = require("../middleware/auth");
+const { createPlannerEntry, getPlannerEntries } = require("../controllers/plannerController");
 
 // ============================================================================
 
@@ -48,6 +49,11 @@ router.post("/balance", auth, updateCurrentBalance);
 
 // fetch current balance
 router.get("/balance", auth, fetchCurrentBalance);
+
+// post to /plannerentries --> insert new planner entry
+router.post("/plannerentries", auth, createPlannerEntry);
+
+router.get("/plannerentries", auth, getPlannerEntries);
 
 // ============================================================================
 

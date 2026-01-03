@@ -3,7 +3,7 @@ import { context } from "../context/MyContext";
 import PlannerBalanceForm from "./PlannerBalanceForm";
 import PlannerEventForm from "./PlannerEventForm";
 
-function PlannerForms() {
+function PlannerForms({ howManyMonths }) {
   const { plannerForm } = useContext(context);
 
   return (
@@ -12,7 +12,7 @@ function PlannerForms() {
       <PlannerBalanceForm />
 
       {/* Add Event Form */}
-      {plannerForm && <PlannerEventForm />}
+      {plannerForm && <PlannerEventForm howManyMonths={howManyMonths} />}
     </div>
   );
 }

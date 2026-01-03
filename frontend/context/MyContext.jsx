@@ -4,7 +4,7 @@ const context = createContext();
 
 export default function ContextProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currencySign, setCurrencySign] = useState("$");
+  const [currencySign, setCurrencySign] = useState("€");
   const [mode, setMode] = useState("Add"); // either Add or Edit
   const [budgeterEntries, setBudgeterEntries] = useState([]); // fetched from db
   const [itemInEdit, setItemInEdit] = useState(null); // either null or obj
@@ -18,6 +18,10 @@ export default function ContextProvider({ children }) {
   const [plannerForm, setPlannerForm] = useState(null); // form to Add/Edit event in Planner. Values: null (do not show), 'add', 'edit'.
   const [userBalance, setUserBalance] = useState(0);
   const [clickedDate, setClickedDate] = useState(null);
+  const [plannerEntries, setPlannerEntries] = useState([]); // fetched from db
+  const [highlightedDay, setHighlightedDay] = useState("");
+  const [lastMonthRemains, setLastMonthRemains] = useState(0);
+  const [monthsPureRemains, setMonthsPureRemains] = useState([]);
 
   return (
     <context.Provider
@@ -52,6 +56,14 @@ export default function ContextProvider({ children }) {
         setUserBalance,
         clickedDate,
         setClickedDate,
+        plannerEntries,
+        setPlannerEntries,
+        highlightedDay,
+        setHighlightedDay,
+        lastMonthRemains,
+        setLastMonthRemains,
+        monthsPureRemains,
+        setMonthsPureRemains,
       }}
     >
       {children}

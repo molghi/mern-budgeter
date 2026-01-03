@@ -1,8 +1,19 @@
 import { useRef, useEffect, useContext, useState } from "react";
 import { context } from "../context/MyContext";
+import { submitPlannerEventForm } from "../utils/plannerEventFormFunctions";
 
-function PlannerEventForm() {
-  const { clickedDate, setPlannerForm } = useContext(context);
+function PlannerEventForm({ howManyMonths }) {
+  const {
+    clickedDate,
+    plannerForm,
+    setPlannerForm,
+    setFlashMessageContent,
+    setPlannerEntries,
+    setMonthsPureRemains,
+    userBalance,
+  } = useContext(context);
+  // plannerForm values: null (do not show), 'add', 'edit'.
+
   const firstFieldToFocusRef = useRef(null);
   const [when, setWhen] = useState(clickedDate);
   const [amount, setAmount] = useState(0);
@@ -15,9 +26,28 @@ function PlannerEventForm() {
   }, [clickedDate]);
 
   return (
-    <form className={`flex-1 bg-gray-800 p-4 rounded-md text-white relative`}>
+    <form
+      onSubmit={(e) =>
+        submitPlannerEventForm(
+          e,
+          plannerForm,
+          when,
+          amount,
+          title,
+          setFlashMessageContent,
+          setPlannerEntries,
+          setMonthsPureRemains,
+          howManyMonths,
+          userBalance
+        )
+      }
+      className={`flex-1 bg-gray-800 p-4 rounded-md text-white relative`}
+    >
+      {/* title */}
       <h3 className="text-lg mb-1 flex gap-3">
-        <span className="font-bold">Add Expense / Income</span>
+        <span className="font-bold">
+          {plannerForm.slice(0, 1).toUpperCase() + plannerForm.slice(1)} Expense / Income
+        </span>
         <span className="opacity-50 text-[14px] transition duration-300 hover:opacity-100">
           (Amount: expenses are negative; income is positive)
         </span>
@@ -43,6 +73,7 @@ function PlannerEventForm() {
         </svg>
       </button>
 
+      {/* FIELDS */}
       <div className="grid grid-cols-4 gap-4 items-end">
         {/* when field */}
         <div>
@@ -87,9 +118,11 @@ function PlannerEventForm() {
         {/* action btn */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded font-bold transition duration-200 min-h-[42px]"
+          className={`w-full hover:opacity-70 py-2 rounded font-bold transition duration-200 min-h-[42px] ${
+            plannerForm === "add" ? "bg-blue-600" : "bg-green-600"
+          }`}
         >
-          Add Event
+          {plannerForm.slice(0, 1).toUpperCase() + plannerForm.slice(1)} Event
         </button>
 
         {/* output errors */}
