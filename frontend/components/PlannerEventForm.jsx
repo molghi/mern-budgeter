@@ -11,36 +11,73 @@ function PlannerEventForm({ howManyMonths }) {
     setPlannerEntries,
     setMonthsPureRemains,
     userBalance,
+    plannerItemInEdit,
+    currencySign,
   } = useContext(context);
   // plannerForm values: null (do not show), 'add', 'edit'.
 
   const firstFieldToFocusRef = useRef(null);
-  const [when, setWhen] = useState(clickedDate);
+  const [when, setWhen] = useState(clickedDate || "");
   const [amount, setAmount] = useState(0);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     setWhen(clickedDate);
+    if (plannerForm === "edit") {
+      const pureAmount = +plannerItemInEdit.amount.split(currencySign)[1];
+      const isExpense = plannerItemInEdit.amount[0] === "-";
+      setWhen(plannerItemInEdit.when);
+      setAmount(isExpense ? pureAmount * -1 : pureAmount);
+      setTitle(plannerItemInEdit.title);
+    }
     firstFieldToFocusRef.current.focus();
-  }, [clickedDate]);
+  }, [clickedDate, plannerItemInEdit]);
+
+  // ============================================================================
+
+  const submitForm = (e, flag) => {
+    e.preventDefault();
+
+    if (flag === "add") {
+      submitPlannerEventForm(
+        e,
+        plannerForm,
+        when,
+        amount,
+        title,
+        setFlashMessageContent,
+        setPlannerEntries,
+        setMonthsPureRemains,
+        howManyMonths,
+        userBalance,
+        undefined,
+        setPlannerForm
+      );
+    }
+    if (flag === "edit") {
+      submitPlannerEventForm(
+        e,
+        plannerForm,
+        when,
+        amount,
+        title,
+        setFlashMessageContent,
+        setPlannerEntries,
+        setMonthsPureRemains,
+        howManyMonths,
+        userBalance,
+        plannerItemInEdit.id,
+        setPlannerForm
+      );
+    }
+  };
+
+  // ============================================================================
 
   return (
     <form
-      onSubmit={(e) =>
-        submitPlannerEventForm(
-          e,
-          plannerForm,
-          when,
-          amount,
-          title,
-          setFlashMessageContent,
-          setPlannerEntries,
-          setMonthsPureRemains,
-          howManyMonths,
-          userBalance
-        )
-      }
+      onSubmit={(e) => submitForm(e, plannerForm)}
       className={`flex-1 bg-gray-800 p-4 rounded-md text-white relative`}
     >
       {/* title */}

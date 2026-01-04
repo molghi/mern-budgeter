@@ -1,7 +1,9 @@
 import { useContext, useState, useEffect } from "react";
 import { context } from "../context/MyContext";
+import { getMonthsRemains } from "../utils/plannerFunctions";
+import axios from "axios";
 
-function PlannerMonthTable({ monthIndex, monthToRender, yearToRender }) {
+function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMonths }) {
   const {
     currencySign,
     plannerEntries,
@@ -10,9 +12,15 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender }) {
     lastMonthRemains,
     setLastMonthRemains,
     monthsPureRemains,
+    setPlannerForm,
+    setPlannerItemInEdit,
+    setFlashMessageContent,
+    setPlannerEntries,
+    setMonthsPureRemains,
   } = useContext(context);
   const [thisMonthEntries, setThisMonthEntries] = useState([]);
   const [thisMonthRemains, setThisMonthRemains] = useState(0);
+  let wasRowDoubleClicked = false;
 
   // ============================================================================
 
@@ -59,6 +67,49 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender }) {
 
   // ============================================================================
 
+  const showEdit = (e) => {
+    setTimeout(() => {
+      if (!wasRowDoubleClicked) {
+        setPlannerForm("edit");
+        setPlannerItemInEdit({
+          id: e.target.closest("tr").dataset.entryId,
+          when: e.target.closest("tr").dataset.date,
+          amount: e.target.closest("tr").querySelector("td:nth-child(2)").textContent.trim(),
+          title: e.target.closest("tr").querySelector("td:nth-child(1)").textContent.trim(),
+        });
+      }
+    }, 200); // small timeout to detect if there was a double click
+  };
+
+  // ============================================================================
+
+  const promptDeletion = async (e) => {
+    wasRowDoubleClicked = true;
+    const answer = confirm(
+      `Are you sure you want to delete this entry?\n
+Title: ${e.target.closest("tr").querySelector("td:nth-child(1)").textContent.trim()}
+When: ${e.target.closest("tr").dataset.date}
+Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.trim()}`
+    );
+    if (!answer) return;
+    try {
+      const response = await axios.delete("http://localhost:8000/plannerentries", {
+        data: { id: e.target.closest("tr").dataset.entryId },
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setFlashMessageContent(["success", "Entry deleted!"]);
+        const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
+        setPlannerEntries(allPlannerEntries.data.documents);
+        setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // ============================================================================
+
   return (
     <table className="min-w-full border border-gray-700 text-white">
       {/* headers */}
@@ -74,7 +125,7 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender }) {
       <tbody className="bg-gray-900">
         {/* render current balance in first month */}
         {monthIndex === 0 && (
-          <tr className="text-sm text-[gold]">
+          <tr className="text-sm text-[gold]" title="Change this row's value in the Current Balance form below">
             <td className="px-3 py-2">Balance</td>
             <td className="px-3 py-2">
               {currencySign}
@@ -87,9 +138,14 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender }) {
         {/* render entries */}
         {thisMonthEntries.map((entry, i) => (
           <tr
+            onClick={showEdit}
+            onDoubleClick={promptDeletion}
+            data-entry-id={entry._id}
             data-date={entry.date}
             key={entry._id}
-            className={`border-b border-gray-700 text-sm ${entry.amount > 0 ? "text-[limegreen]" : "text-[coral]"}`}
+            className={`border-b border-gray-700 text-sm transition duration-300 hover:bg-black cursor-pointer active:bg-[#222] ${
+              entry.amount > 0 ? "text-[limegreen]" : "text-[coral]"
+            }`}
             onMouseEnter={hoverOverRow}
             onMouseLeave={hoverOutRow}
           >

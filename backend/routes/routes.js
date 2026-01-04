@@ -7,9 +7,22 @@ const {
   deleteBudgeterEntry,
   getUserSummary,
 } = require("../controllers/budgeterController");
-const { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance } = require("../controllers/userController");
+const {
+  signUp,
+  logIn,
+  logOut,
+  updateCurrentBalance,
+  fetchCurrentBalance,
+  changeUsername,
+  getUsername,
+} = require("../controllers/userController");
 const auth = require("../middleware/auth");
-const { createPlannerEntry, getPlannerEntries } = require("../controllers/plannerController");
+const {
+  createPlannerEntry,
+  getPlannerEntries,
+  updatePlannerEntry,
+  deletePlannerEntry,
+} = require("../controllers/plannerController");
 
 // ============================================================================
 
@@ -41,6 +54,10 @@ router.post("/login", logIn);
 // log out
 router.get("/logout", auth, logOut);
 
+router.post("/username", auth, changeUsername);
+
+router.get("/username", auth, getUsername);
+
 //
 
 // ACTIONS
@@ -54,6 +71,10 @@ router.get("/balance", auth, fetchCurrentBalance);
 router.post("/plannerentries", auth, createPlannerEntry);
 
 router.get("/plannerentries", auth, getPlannerEntries);
+
+router.patch("/plannerentries", auth, updatePlannerEntry);
+
+router.delete("/plannerentries", auth, deletePlannerEntry);
 
 // ============================================================================
 

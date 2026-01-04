@@ -11,7 +11,9 @@ async function submitPlannerEventForm(
   setPlannerEntries,
   setMonthsPureRemains,
   howManyMonths,
-  userBalance
+  userBalance,
+  entryId,
+  setPlannerForm
 ) {
   e.preventDefault();
 
@@ -27,9 +29,22 @@ async function submitPlannerEventForm(
       setPlannerEntries(allPlannerEntries.data.documents);
       setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
     }
+    setPlannerForm(null);
   }
 
   if (mode === "edit") {
+    const response = await axios.patch(
+      "http://localhost:8000/plannerentries",
+      { entryId, when, amount, title },
+      { withCredentials: true }
+    );
+    if (response.status === 200) {
+      setFlashMessageContent(["success", "Entry updated!"]);
+      const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
+      setPlannerEntries(allPlannerEntries.data.documents);
+      setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
+    }
+    setPlannerForm(null);
   }
 }
 

@@ -13,7 +13,10 @@ function PlannerMonths({ howManyMonths }) {
       {/* explainer text */}
       <h3 className="text-white text-center mb-3">
         <span className="font-bold opacity-50">How It Works:</span> {` `}
-        <span>To add an entry, click on a day.</span>
+        <span>
+          Click a calendar day to <u>add</u> an entry. Click a table row to <u>edit</u>. Double-click a row to{" "}
+          <u>delete</u>.
+        </span>
       </h3>
 
       {/* months box */}
@@ -22,7 +25,7 @@ function PlannerMonths({ howManyMonths }) {
       >
         {/* render months */}
         {new Array(howManyMonths).fill(0).map((x, i) => (
-          <PlannerMonth key={i} index={i} startPeriod={currentMonthYear} />
+          <PlannerMonth key={i} index={i} startPeriod={currentMonthYear} howManyMonths={howManyMonths} />
         ))}
       </div>
     </div>

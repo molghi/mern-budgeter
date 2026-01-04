@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { context } from "../context/MyContext";
 import axios from "axios";
+import { changeUsername, changeWeekStart, changeCurrencySign } from "../utils/headerFunctions";
 
 function Header() {
   const {
@@ -13,7 +14,11 @@ function Header() {
     setIsLoggedIn,
     setUsername,
     setUserEmail,
+    setWeekStartsOnMon,
+    setCurrencySign,
   } = useContext(context);
+
+  const preferencesItems = ["Change Username", "Change Week Start", "Change Currency Sign"];
 
   const logOut = async () => {
     try {
@@ -29,6 +34,49 @@ function Header() {
       setFlashMessageContent(["error", "Some error happened!"]);
     }
   };
+
+  // ============================================================================
+
+  const preferenceAction = (actionString) => {
+    if (actionString === preferencesItems[0]) {
+      // Change Username
+      changeUsername(setUsername, setFlashMessageContent);
+    }
+    if (actionString === preferencesItems[1]) {
+      // Change Week Start
+      setWeekStartsOnMon((prev) => {
+        localStorage.setItem("budgeter_week_starts_on_mon", JSON.stringify(!prev));
+        return !prev;
+      });
+    }
+    if (actionString === preferencesItems[2]) {
+      // Change Currency Sign
+      changeCurrencySign(setCurrencySign, setFlashMessageContent);
+    }
+  };
+
+  // ============================================================================
+
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/username", { withCredentials: true });
+        if (response.status === 200) {
+          setUsername(response.data.username);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserName();
+
+    const currencySignFromLS = localStorage.getItem("budgeter_currency_sign");
+    if (currencySignFromLS) {
+      setCurrencySign(JSON.parse(currencySignFromLS));
+    }
+  }, []);
+
+  // ============================================================================
 
   return (
     <header className="bg-gray-900 text-white">
@@ -73,6 +121,27 @@ function Header() {
                   Tracker
                 </button>
               )}
+
+              <div className="bg-purple-700 hover:bg-purple-800 transition duration-200 text-white font-bold py-2 px-4 rounded cursor-pointer relative dropdown-box">
+                <span className="dropdown-title flex items-center gap-1">
+                  Preferences
+                  {/* icon: triangle pointing down */}
+                  {/* <span className="inline-block w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-white"></span> */}
+                </span>
+                <div className="absolute right-0 mt-2 w-52 transition duration-300 dropdown-list">
+                  <ul className="bg-gray-800 text-white rounded shadow-lg divide-y divide-gray-700">
+                    {preferencesItems.map((x, i) => (
+                      <li
+                        key={i}
+                        onClick={() => preferenceAction(x)}
+                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                      >
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
               <button
                 onClick={logOut}

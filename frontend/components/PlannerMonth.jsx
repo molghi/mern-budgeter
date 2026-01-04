@@ -1,10 +1,13 @@
 import { context } from "../context/MyContext";
 import PlannerMonthTable from "./PlannerMonthTable";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
-function PlannerMonth({ index, startPeriod }) {
-  const { setPlannerForm, setClickedDate, highlightedDay } = useContext(context);
+function PlannerMonth({ index, startPeriod, howManyMonths }) {
+  const { setPlannerForm, setClickedDate, highlightedDay, plannerEntries, weekStartsOnMon, setWeekStartsOnMon } =
+    useContext(context);
   const [startPeriodMonth, startPeriodYear] = startPeriod.split("-").map((x) => +x);
+
+  const plannerEntriesOnlyDates = plannerEntries.map((x) => x.date);
 
   let monthToRender, yearToRender;
   monthToRender = startPeriodMonth + index;
@@ -16,9 +19,17 @@ function PlannerMonth({ index, startPeriod }) {
 
   const currentDate = new Date().getDate();
   const lastMonthDay = new Date(yearToRender, monthToRender, 0).getDate();
-  const monthInitialOffset = new Date(yearToRender, monthToRender - 1, 1).getDay();
+  let monthInitialOffset = new Date(yearToRender, monthToRender - 1, 1).getDay();
 
-  const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  if (weekStartsOnMon) {
+    monthInitialOffset = monthInitialOffset - 1;
+    if (monthInitialOffset < 0) monthInitialOffset = 7 + monthInitialOffset;
+  }
+
+  const weekdayNames = weekStartsOnMon
+    ? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
   const monthNames = [
     "January",
     "February",
@@ -39,6 +50,13 @@ function PlannerMonth({ index, startPeriod }) {
     summer: "#4caf50", // vivid green — lush foliage
     autumn: "#f4a261", // warm orange — falling leaves
   };
+
+  useEffect(() => {
+    let fromLS = localStorage.getItem("budgeter_week_starts_on_mon");
+    if (fromLS) {
+      setWeekStartsOnMon(JSON.parse(fromLS));
+    }
+  }, []);
 
   const getSeasonColor = (monthNum) => {
     let result;
@@ -70,7 +88,6 @@ function PlannerMonth({ index, startPeriod }) {
   const isFirstMonthToShow = index === 0;
 
   const addEvent = (e) => {
-    console.log("addEvent runs");
     setPlannerForm("add");
     setClickedDate(e.target.dataset.day);
   };
@@ -79,7 +96,7 @@ function PlannerMonth({ index, startPeriod }) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1">
+      <div className="">
         {/* month title */}
         <h2 className={`font-bold text-center mb-4 text-xl text-[${getSeasonColor(monthToRender)}]`}>
           <span>
@@ -92,35 +109,39 @@ function PlannerMonth({ index, startPeriod }) {
         </h2>
 
         {/* month block of days */}
-        <div className="flex flex-wrap mb-10">
-          {/* render weekday names */}
-          {weekdayNames.map((x, i) => (
-            <div
-              key={i}
-              style={{ width: 100 / 7 + "%" }}
-              className="py-2 text-sm text-[#777] font-bold border border-[#777] opacity-100 text-center flex items-center justify-center"
-            >
-              {x.slice(0, 3)}
-            </div>
-          ))}
+        <div className="min-h-[325px]">
+          <div className="flex flex-wrap ">
+            {/* render weekday names */}
+            {weekdayNames.map((x, i) => (
+              <div
+                key={i}
+                style={{ width: 100 / 7 + "%" }}
+                className="py-2 text-sm text-[#777] font-bold border border-[#777] opacity-100 text-center flex items-center justify-center"
+              >
+                {x.slice(0, 3)}
+              </div>
+            ))}
 
-          {/* render empty offset days */}
-          {new Array(monthInitialOffset).fill(0).map((x, i) => (
-            <div key={i} style={{ width: 100 / 7 + "%" }} className="p-2 border border-[#555]"></div>
-          ))}
+            {/* render empty offset days */}
+            {new Array(monthInitialOffset).fill(0).map((x, i) => (
+              <div key={i} style={{ width: 100 / 7 + "%" }} className="p-2 border border-[#555]"></div>
+            ))}
 
-          {/* render true days */}
-          {new Array(lastMonthDay).fill(0).map((x, i) => (
-            <div
-              key={i}
-              data-day={`${yearToRender}-${monthToRender.toString().padStart(2, "0")}-${(i + 1)
+            {/* render true days */}
+            {new Array(lastMonthDay).fill(0).map((x, i) => {
+              const curDate = `${yearToRender}-${monthToRender.toString().padStart(2, "0")}-${(i + 1)
                 .toString()
-                .padStart(2, "0")}`}
-              onClick={addEvent}
-              style={{ width: 100 / 7 + "%" }}
-              className={`month-day p-2 border text-center transition duration-200 cursor-pointer hover:bg-[${getSeasonColor(
-                monthToRender
-              )}] hover:text-[black] 
+                .padStart(2, "0")}`;
+
+              return (
+                <div
+                  key={i}
+                  data-day={curDate}
+                  onClick={addEvent}
+                  style={{ width: 100 / 7 + "%" }}
+                  className={`relative month-day p-2 border text-center transition duration-200 cursor-pointer hover:bg-[${getSeasonColor(
+                    monthToRender
+                  )}] hover:text-[black] 
             
             ${
               isFirstMonthToShow && i + 1 < currentDate
@@ -136,23 +157,34 @@ function PlannerMonth({ index, startPeriod }) {
                 : ""
             }
 
-            ${
-              highlightedDay ===
-              `${yearToRender}-${monthToRender.toString().padStart(2, "0")}-${(i + 1).toString().padStart(2, "0")}`
-                ? `bg-[${getSeasonColor(monthToRender)}] text-black`
-                : ""
-            }
+            ${highlightedDay === curDate ? `bg-[${getSeasonColor(monthToRender)}] text-black` : ""}
+
+            
             
             `}
-            >
-              {i + 1}
-            </div>
-          ))}
+                >
+                  {!plannerEntriesOnlyDates.includes(curDate) ? (
+                    i + 1
+                  ) : (
+                    <>
+                      {i + 1}
+                      <span className="absolute top-0 right-0 w-0 h-0 border-l-[15px] border-l-transparent border-t-[15px] border-t-white"></span>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* month table */}
-      <PlannerMonthTable monthIndex={index} monthToRender={monthToRender} yearToRender={yearToRender} />
+      <PlannerMonthTable
+        monthIndex={index}
+        monthToRender={monthToRender}
+        yearToRender={yearToRender}
+        howManyMonths={howManyMonths}
+      />
     </div>
   );
 }

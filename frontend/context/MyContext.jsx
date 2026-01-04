@@ -12,7 +12,7 @@ export default function ContextProvider({ children }) {
   const [totalsPerCategory, setTotalsPerCategory] = useState(null); // either null or obj
   const [isLoading, setIsLoading] = useState(false);
   const [flashMessageContent, setFlashMessageContent] = useState([]);
-  const [username, setUsername] = useState("Jackie Boy");
+  const [username, setUsername] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [shownMainBlock, setShownMainBlock] = useState(1); // 0 for budgeter/tracker, 1 for planner
   const [plannerForm, setPlannerForm] = useState(null); // form to Add/Edit event in Planner. Values: null (do not show), 'add', 'edit'.
@@ -22,6 +22,8 @@ export default function ContextProvider({ children }) {
   const [highlightedDay, setHighlightedDay] = useState("");
   const [lastMonthRemains, setLastMonthRemains] = useState(0);
   const [monthsPureRemains, setMonthsPureRemains] = useState([]);
+  const [plannerItemInEdit, setPlannerItemInEdit] = useState(null); // either null or obj
+  const [weekStartsOnMon, setWeekStartsOnMon] = useState(false);
 
   return (
     <context.Provider
@@ -64,6 +66,10 @@ export default function ContextProvider({ children }) {
         setLastMonthRemains,
         monthsPureRemains,
         setMonthsPureRemains,
+        plannerItemInEdit,
+        setPlannerItemInEdit,
+        weekStartsOnMon,
+        setWeekStartsOnMon,
       }}
     >
       {children}

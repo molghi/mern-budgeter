@@ -7,3 +7,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.6;
 }
+
+.dropdown-box:hover .dropdown-list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-list {
+  opacity: 0;
+  visibility: hidden;
+  padding-top: 10px;
+  transform: translateY(20px);
+}

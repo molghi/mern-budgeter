@@ -8,4 +8,8 @@ const updateCurrentBalance = require("./userFunctions/updateCurrentBalance");
 
 const fetchCurrentBalance = require("./userFunctions/fetchCurrentBalance");
 
-module.exports = { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance };
+const changeUsername = require("./userFunctions/changeUsername");
+
+const getUsername = require("./userFunctions/getUsername");
+
+module.exports = { signUp, logIn, logOut, updateCurrentBalance, fetchCurrentBalance, changeUsername, getUsername };
