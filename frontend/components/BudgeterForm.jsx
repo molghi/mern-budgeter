@@ -107,12 +107,12 @@ function BudgeterForm() {
 
   return (
     <>
-      <div className="flex-[3] border border-[gray] rounded-xl overflow-hidden self-start">
+      <div className="flex-1 w-full md:w-auto md:flex-[3] border border-[gray] rounded-xl overflow-hidden self-start">
         <div className="p-4 pb-8 bg-black text-[white] rounded">
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">{mode} Entry</h4>
 
           <form
-            className="space-y-4"
+            className="md:space-y-4 grid grid-cols-2 gap-4 md:gap-0 md:block"
             onSubmit={(e) =>
               formSubmit(
                 e,
@@ -177,7 +177,7 @@ function BudgeterForm() {
             ))}
 
             <button
-              className={`w-full py-2 border transition duration-300 rounded hover:text-black ${
+              className={`w-full col-span-full py-2 border transition duration-300 rounded hover:text-black ${
                 mode === "Add"
                   ? "border-[limegreen] text-[limegreen] hover:bg-[limegreen]"
                   : "border-[dodgerblue] text-[dodgerblue] hover:bg-[dodgerblue]"

@@ -3,17 +3,19 @@ import { context } from "../context/MyContext";
 import axios from "axios";
 
 function PlannerBalanceForm() {
-  const { userBalance, setUserBalance, setFlashMessageContent } = useContext(context);
+  const { userBalance, setUserBalance, setFlashMessageContent, setIsLoading } = useContext(context);
   const [currentBalance, setCurrentBalance] = useState(userBalance);
 
   const updateCurrentBalance = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await axios.post("http://localhost:8000/balance", { currentBalance }, { withCredentials: true });
       if (response.status === 200) {
         setUserBalance(response.data.balance);
         setFlashMessageContent(["success", response.data.msg]);
       }
+      setIsLoading(false);
     } catch (error) {
       console.log("OOPS!", error);
     }

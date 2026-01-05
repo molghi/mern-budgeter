@@ -49,9 +49,11 @@ function BudgeterTableRow({ data }) {
     );
     if (!answer) return;
     try {
-      const response = await axios.delete(`http://localhost:8000/entries/${data._id}`);
+      const response = await axios.delete(`http://localhost:8000/entries/${data._id}`, { withCredentials: true });
       if (response.status === 200) {
-        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`); // fetch all user entries
+        const allUserEntries = await axios.get(`http://localhost:8000/entries?period=${period}`, {
+          withCredentials: true,
+        }); // fetch all user entries
         setBudgeterEntries(allUserEntries.data.documents);
         setFlashMessageContent(["success", "Entry deleted!"]);
       }
@@ -72,7 +74,7 @@ function BudgeterTableRow({ data }) {
 
       {/* Category */}
       <td
-        className={`entry__category py-2 px-3 text-[12px] text-[${categoryColors[data.category]}]`}
+        className={`entry__category py-2 px-3 text-[12px] text-[${categoryColors[data.category]}] break-words`}
         title={categories.find((x) => x.includes(data.category))[0]}
       >
         {categories.find((x) => x.includes(data.category))[0]}
@@ -83,7 +85,7 @@ function BudgeterTableRow({ data }) {
 
       {/* Note */}
       <td className="py-2 px-3 w-[200px]">
-        <span className="entry__note text-[12px] leading-none" title={data.note}>
+        <span className="entry__note text-[12px] leading-none break-words" title={data.note}>
           {data.note}
         </span>
       </td>

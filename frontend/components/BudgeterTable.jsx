@@ -4,19 +4,19 @@ import BudgeterTableRow from "./BudgeterTableRow";
 import spinnerImg from "../public/images/loading-spinner-2.png";
 
 function BudgeterTable() {
-  const { budgeterEntries, isLoading } = useContext(context);
+  const { budgeterEntries, isLoading, shownMainBlock } = useContext(context);
 
   const tableColumns = ["Amount", "Category", "Date", "Note", "Actions"];
 
   return (
     <>
-      <div className="flex-[7] relative">
-        <div className="p-4 pt-0 bg-black text-[white] rounded">
+      <div className="flex-1 w-full md:w-auto md:flex-[7] relative">
+        <div className="p-4 pt-0 bg-black text-[white] rounded overflow-x-auto">
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">
             Entries {budgeterEntries && budgeterEntries.length > 0 && `(${budgeterEntries.length})`}
           </h4>
 
-          <table className="w-full border border-[gray] text-[gray]">
+          <table className="w-full border border-[gray] text-[gray] table-auto min-w-full">
             <thead className="bg-black/80 border border-[gray]">
               <tr>
                 {/* Table headers */}
@@ -34,7 +34,7 @@ function BudgeterTable() {
                 budgeterEntries.map((item) => <BudgeterTableRow key={item._id} data={item} />)
               ) : (
                 <tr>
-                  <td colSpan="5" className="italic text-center py-4 text-[gray]">
+                  <td colSpan="5" className="italic text-center py-4 text-[gray] break-words">
                     {isLoading ? "Loading data..." : "Your entries will show here."}
                   </td>
                 </tr>
@@ -43,7 +43,7 @@ function BudgeterTable() {
           </table>
 
           {/* Show loading spinner on fetching data */}
-          {isLoading && (
+          {isLoading && shownMainBlock === 0 && (
             <div className="max-h-[300px] flex justify-center absolute w-full top-[20%]">
               <img src={spinnerImg} className="animate-spin w-[150px] h-[150px]" alt="Loading spinner" />
             </div>

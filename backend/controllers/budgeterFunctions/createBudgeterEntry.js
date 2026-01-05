@@ -34,7 +34,7 @@ const isValidDate = (str) => {
 
 module.exports = async function createBudgeterEntry(req, res) {
   // get submitted data
-  const { amount, category, date, note } = req.body;
+  const { amount, category, date, note, dateProper } = req.body;
 
   // VALIDATE (and return errors)
   // -- amount must be positive number
@@ -57,6 +57,7 @@ module.exports = async function createBudgeterEntry(req, res) {
     amount: +amount.trim(),
     category: category.trim(),
     date: date.trim(),
+    dateProper: dateProper.trim(),
     note: note.trim(),
   };
 

@@ -13,6 +13,7 @@ function BudgeterSummary() {
     isLoading,
     setIsLoading,
     budgeterEntries,
+    shownMainBlock,
   } = useContext(context);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
@@ -65,13 +66,13 @@ function BudgeterSummary() {
         <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">Spending Summary</h4>
 
         {/* Show loading spinner on fetching data */}
-        {isLoading && (
+        {isLoading && shownMainBlock === 0 && (
           <div className="max-h-[300px] flex justify-center absolute w-full">
             <img src={spinnerImg} className="animate-spin w-[150px] h-[150px]" alt="Loading spinner" />
           </div>
         )}
 
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:gap-0 gap-3">
           <div>
             {/* Total income */}
             <div className="mb-2">
@@ -121,7 +122,7 @@ function BudgeterSummary() {
         </div>
 
         {/* Chart Title */}
-        <h5 className="text-md mb-2">
+        <h5 className="mb-2 text-sm sm:text-md">
           <span className="text-[gray] font-bold">Chart:</span> Distribution of Expenses by Category
         </h5>
 
@@ -148,7 +149,7 @@ function BudgeterSummary() {
           {/* Chart Legend */}
           <div>
             {totalExpenses > 0 && (
-              <ol className="list-decimal list-inside ml-5">
+              <ol className="list-decimal list-inside ml-5 text-sm sm:text-md">
                 {totalsPerCategory
                   .filter((x) => x._id !== "income")
                   .sort((a, b) => b.totalAmount - a.totalAmount)

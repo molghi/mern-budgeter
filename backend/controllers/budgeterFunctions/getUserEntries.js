@@ -14,7 +14,9 @@ module.exports = async function getUserEntries(req, res) {
 
   // set start and end of period (in proper format for query)
   const periodStart = new Date(year, month - 1, 1);
-  const periodEnd = new Date(year, month, 0, 23, 59, 59);
+  periodStart.setHours(0, 0, 0, 0); // start of first day
+  const periodEnd = new Date(year, month, 0);
+  periodEnd.setHours(23, 59, 59, 999); // end of last day
 
   try {
     // match by current user and start-end periods:
@@ -27,7 +29,7 @@ module.exports = async function getUserEntries(req, res) {
       //     { $lte: [{ $dateFromString: { dateString: "$date" } }, periodEnd] },
       //   ],
       // },
-      date: { $gte: periodStart, $lte: periodEnd }, // this is less involved than the commented out right above
+      dateProper: { $gte: periodStart, $lte: periodEnd }, // this is less involved than the commented out right above
     });
 
     return res.status(200).json({

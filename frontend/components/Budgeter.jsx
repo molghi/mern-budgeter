@@ -4,9 +4,9 @@ import BudgeterTable from "./BudgeterTable";
 
 function Budgeter() {
   return (
-    <div className="pb-[100px]">
+    <div className="px-4 pb-[100px]">
       <BudgeterSummary />
-      <div className="max-w-5xl mx-auto flex gap-5">
+      <div className="max-w-5xl mx-auto flex gap-5 md:flex-row flex-col">
         <BudgeterForm />
         <BudgeterTable />
       </div>

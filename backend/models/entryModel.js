@@ -20,6 +20,10 @@ const entrySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    dateProper: {
+      type: Date,
+      required: true,
+    },
     note: {
       type: String,
       required: false,

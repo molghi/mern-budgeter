@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { context } from "../context/MyContext";
 import { getMonthsRemains } from "../utils/plannerFunctions";
 import axios from "axios";
+import spinnerImg from "../public/images/loading-spinner-2.png";
 
 function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMonths }) {
   const {
@@ -17,6 +18,9 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
     setFlashMessageContent,
     setPlannerEntries,
     setMonthsPureRemains,
+    isLoading,
+    shownMainBlock,
+    setIsLoading,
   } = useContext(context);
   const [thisMonthEntries, setThisMonthEntries] = useState([]);
   const [thisMonthRemains, setThisMonthRemains] = useState(0);
@@ -93,16 +97,19 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
     );
     if (!answer) return;
     try {
+      setIsLoading(true);
       const response = await axios.delete("http://localhost:8000/plannerentries", {
         data: { id: e.target.closest("tr").dataset.entryId },
         withCredentials: true,
       });
       if (response.status === 200) {
         setFlashMessageContent(["success", "Entry deleted!"]);
+        setPlannerForm(null);
         const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
         setPlannerEntries(allPlannerEntries.data.documents);
         setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
       }
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -111,7 +118,7 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
   // ============================================================================
 
   return (
-    <table className="min-w-full border border-gray-700 text-white">
+    <table className="min-w-full border border-gray-700 text-white relative">
       {/* headers */}
       <thead className="bg-gray-800">
         <tr className="text-sm">
@@ -123,9 +130,23 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
 
       {/* rows */}
       <tbody className="bg-gray-900">
+        {/* show loading spinner */}
+        {isLoading && shownMainBlock === 1 && (
+          <tr>
+            <td>
+              <div className="max-h-[300px] flex justify-center absolute w-full">
+                <img src={spinnerImg} className="animate-spin w-[150px] h-[150px]" alt="Loading spinner" />
+              </div>
+            </td>
+          </tr>
+        )}
+
         {/* render current balance in first month */}
         {monthIndex === 0 && (
-          <tr className="text-sm text-[gold]" title="Change this row's value in the Current Balance form below">
+          <tr
+            className="text-sm text-[gold] border-b border-gray-700"
+            title="Change this row's value in the Current Balance form below"
+          >
             <td className="px-3 py-2">Balance</td>
             <td className="px-3 py-2">
               {currencySign}

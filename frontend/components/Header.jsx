@@ -19,6 +19,11 @@ function Header() {
   } = useContext(context);
 
   const preferencesItems = ["Change Username", "Change Week Start", "Change Currency Sign"];
+  const preferencesItemsClarifiers = [
+    "Username displayed at the center of this block",
+    "Set week start: Monday or Sunday (in Planner)",
+    "",
+  ];
 
   const logOut = async () => {
     try {
@@ -76,13 +81,18 @@ function Header() {
     }
   }, []);
 
+  useEffect(() => {
+    // change doc title based on which block is showing
+    document.title = `Your Budget ${shownMainBlock === 0 ? "Tracker" : "Planner"}`;
+  }, [shownMainBlock]);
+
   // ============================================================================
 
   return (
     <header className="bg-gray-900 text-white">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+      <div className="container mx-auto flex items-center justify-between py-4 px-3 md:px-6 gap-4 md:flex-nowrap flex-wrap">
         {/* Logo */}
-        <div className="text-2xl font-bold">
+        <div className="text-xl  lg:text-2xl font-bold">
           💰 Your Budget <span className="text-green-300">{shownMainBlock === 0 ? "Tracker" : "Planner"}</span>
         </div>
 
@@ -97,7 +107,7 @@ function Header() {
         )}
 
         {/* Btns */}
-        <div className="flex gap-4">
+        <div className="flex gap-4 sm:flex-nowrap flex-wrap">
           {isLoggedIn ? (
             <>
               {/* Show Planner btn when Tracker is shown */}
@@ -105,7 +115,7 @@ function Header() {
                 <button
                   title="Show Planner"
                   onClick={() => setShownMainBlock(1)}
-                  className="bg-green-700 transition duration-200 hover:opacity-60 text-white font-bold py-2 px-4 rounded"
+                  className="bg-green-700 transition duration-200 hover:opacity-60 text-white font-bold py-2 px-4 rounded whitespace-nowrap sm:text-md text-sm"
                 >
                   Planner
                 </button>
@@ -116,24 +126,25 @@ function Header() {
                 <button
                   title="Show Tracker"
                   onClick={() => setShownMainBlock(0)}
-                  className="bg-green-700 transition duration-200 hover:opacity-60 text-white font-bold py-2 px-4 rounded"
+                  className="bg-green-700 transition duration-200 hover:opacity-60 text-white font-bold py-2 px-4 rounded whitespace-nowrap sm:text-md text-sm"
                 >
                   Tracker
                 </button>
               )}
 
-              <div className="bg-purple-700 hover:bg-purple-800 transition duration-200 text-white font-bold py-2 px-4 rounded cursor-pointer relative dropdown-box">
+              <div className="bg-purple-700 hover:bg-purple-800 transition duration-200 text-white font-bold py-2 px-4 rounded cursor-pointer relative dropdown-box sm:text-md text-sm">
                 <span className="dropdown-title flex items-center gap-1">
                   Preferences
                   {/* icon: triangle pointing down */}
                   {/* <span className="inline-block w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-white"></span> */}
                 </span>
-                <div className="absolute right-0 mt-2 w-52 transition duration-300 dropdown-list">
+                <div className="absolute z-[10] right-0 mt-2 w-52 transition duration-300 dropdown-list">
                   <ul className="bg-gray-800 text-white rounded shadow-lg divide-y divide-gray-700">
                     {preferencesItems.map((x, i) => (
                       <li
                         key={i}
                         onClick={() => preferenceAction(x)}
+                        title={preferencesItemsClarifiers[i]}
                         className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
                       >
                         {x}
@@ -145,7 +156,7 @@ function Header() {
 
               <button
                 onClick={logOut}
-                className="bg-gray-700 transition duration-200 hover:opacity-100 opacity-60 text-white font-bold py-2 px-4 rounded"
+                className="bg-gray-700 transition duration-200 hover:opacity-100 opacity-60 text-white font-bold py-2 px-4 rounded whitespace-nowrap sm:text-md text-sm"
               >
                 Log Out
               </button>

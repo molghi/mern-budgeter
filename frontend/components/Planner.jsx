@@ -6,13 +6,15 @@ import { getMonthsRemains } from "../utils/plannerFunctions";
 import axios from "axios";
 
 function Planner() {
-  const { setPlannerEntries, setMonthsPureRemains, userBalance } = useContext(context);
+  const { setPlannerEntries, setMonthsPureRemains, userBalance, setIsLoading } = useContext(context);
   const howManyMonths = 4;
 
   useEffect(() => {
     const fetchPlannerEntries = async () => {
       try {
+        setIsLoading(true);
         const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
+        setIsLoading(false);
         if (allPlannerEntries.status === 200) {
           setPlannerEntries(allPlannerEntries.data.documents);
           setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));

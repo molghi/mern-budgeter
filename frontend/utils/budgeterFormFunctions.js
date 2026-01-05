@@ -44,6 +44,7 @@ const formSubmit = async (
     category: categories.find((catItem) => catItem.includes(category))[1],
     date: date.trim(),
     note: note.trim(),
+    dateProper: new Date(date.trim()),
   };
 
   // shoot network request

@@ -13,6 +13,7 @@ function PlannerEventForm({ howManyMonths }) {
     userBalance,
     plannerItemInEdit,
     currencySign,
+    setIsLoading,
   } = useContext(context);
   // plannerForm values: null (do not show), 'add', 'edit'.
 
@@ -52,7 +53,8 @@ function PlannerEventForm({ howManyMonths }) {
         howManyMonths,
         userBalance,
         undefined,
-        setPlannerForm
+        setPlannerForm,
+        setIsLoading
       );
     }
     if (flag === "edit") {
@@ -68,7 +70,8 @@ function PlannerEventForm({ howManyMonths }) {
         howManyMonths,
         userBalance,
         plannerItemInEdit.id,
-        setPlannerForm
+        setPlannerForm,
+        setIsLoading
       );
     }
   };

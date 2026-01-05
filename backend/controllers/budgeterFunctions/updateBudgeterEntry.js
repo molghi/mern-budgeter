@@ -14,6 +14,7 @@ module.exports = async function updateBudgeterEntry(req, res) {
           category: req.body.category.trim(),
           date: req.body.date.trim(),
           note: req.body.note.trim(),
+          dateProper: req.body.dateProper.trim(),
         },
         { new: true }
       ); // return updated doc
