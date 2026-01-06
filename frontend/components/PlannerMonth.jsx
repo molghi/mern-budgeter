@@ -7,8 +7,9 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
     useContext(context);
   const [startPeriodMonth, startPeriodYear] = startPeriod.split("-").map((x) => +x);
 
-  const plannerEntriesOnlyDates = plannerEntries.map((x) => x.date);
+  const plannerEntriesOnlyDates = plannerEntries.map((x) => x.date); // get only dates (arr of strings)
 
+  // figure out month & year to render
   let monthToRender, yearToRender;
   monthToRender = startPeriodMonth + index;
   yearToRender = startPeriodYear;
@@ -18,9 +19,10 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
   }
 
   const currentDate = new Date().getDate();
-  const lastMonthDay = new Date(yearToRender, monthToRender, 0).getDate();
-  let monthInitialOffset = new Date(yearToRender, monthToRender - 1, 1).getDay();
+  const lastMonthDay = new Date(yearToRender, monthToRender, 0).getDate(); // current month's last day
+  let monthInitialOffset = new Date(yearToRender, monthToRender - 1, 1).getDay(); // empty days at the beginning of month
 
+  // adjust calendar block depending on when week starts, Mon or Sun
   if (weekStartsOnMon) {
     monthInitialOffset = monthInitialOffset - 1;
     if (monthInitialOffset < 0) monthInitialOffset = 7 + monthInitialOffset;
@@ -44,6 +46,7 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
     "November",
     "December",
   ];
+
   const seasonColors = {
     winter: "#4a90e2", // cool blue — icy/cold tone
     spring: "#ffb7c5", // soft pinkish — fresh flowers
@@ -51,13 +54,17 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
     autumn: "#f4a261", // warm orange — falling leaves
   };
 
+  // ============================================================================
+
   useEffect(() => {
+    // get when week starts from LS
     let fromLS = localStorage.getItem("budgeter_week_starts_on_mon");
     if (fromLS) {
       setWeekStartsOnMon(JSON.parse(fromLS));
     }
   }, []);
 
+  // return season color as hex
   const getSeasonColor = (monthNum) => {
     let result;
     switch (monthNum) {
@@ -88,7 +95,7 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
   const isFirstMonthToShow = index === 0;
 
   const addEvent = (e) => {
-    setPlannerForm("add");
+    setPlannerForm("add"); // show add form
     setClickedDate(e.target.dataset.day);
   };
 
@@ -96,9 +103,9 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="">
-        {/* month title */}
-        <h2 className={`font-bold text-center mb-4 text-xl text-[${getSeasonColor(monthToRender)}]`}>
+      <div>
+        {/* Month Title */}
+        <h2 className={`font-bold text-center mb-4 text-md xl:text-xl text-[${getSeasonColor(monthToRender)}]`}>
           <span>
             Month {monthToRender} of {yearToRender}
           </span>{" "}
@@ -108,26 +115,26 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
           </span>
         </h2>
 
-        {/* month block of days */}
+        {/* Month days */}
         <div className="min-h-[325px]">
           <div className="flex flex-wrap ">
-            {/* render weekday names */}
+            {/* Render weekday names */}
             {weekdayNames.map((x, i) => (
               <div
                 key={i}
                 style={{ width: 100 / 7 + "%" }}
-                className="py-2 text-sm text-[#777] font-bold border border-[#777] opacity-100 text-center flex items-center justify-center"
+                className="py-2 text-[12px] xl:text-sm text-[#777] font-bold border border-[#777] opacity-100 text-center flex items-center justify-center"
               >
                 {x.slice(0, 3)}
               </div>
             ))}
 
-            {/* render empty offset days */}
+            {/* Render empty offset days */}
             {new Array(monthInitialOffset).fill(0).map((x, i) => (
               <div key={i} style={{ width: 100 / 7 + "%" }} className="p-2 border border-[#555]"></div>
             ))}
 
-            {/* render true days */}
+            {/* Render true days (with conditional classes) */}
             {new Array(lastMonthDay).fill(0).map((x, i) => {
               const curDate = `${yearToRender}-${monthToRender.toString().padStart(2, "0")}-${(i + 1)
                 .toString()
@@ -139,7 +146,7 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
                   data-day={curDate}
                   onClick={addEvent}
                   style={{ width: 100 / 7 + "%" }}
-                  className={`relative month-day p-2 border text-center transition duration-200 cursor-pointer hover:bg-[${getSeasonColor(
+                  className={`relative flex justify-center items-center month-day p-2 border text-center transition duration-200 cursor-pointer hover:bg-[${getSeasonColor(
                     monthToRender
                   )}] hover:text-[black] 
             
@@ -158,9 +165,6 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
             }
 
             ${highlightedDay === curDate ? `bg-[${getSeasonColor(monthToRender)}] text-black` : ""}
-
-            
-            
             `}
                 >
                   {!plannerEntriesOnlyDates.includes(curDate) ? (
@@ -178,7 +182,7 @@ function PlannerMonth({ index, startPeriod, howManyMonths }) {
         </div>
       </div>
 
-      {/* month table */}
+      {/* Render month table */}
       <PlannerMonthTable
         monthIndex={index}
         monthToRender={monthToRender}

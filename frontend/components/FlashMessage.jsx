@@ -6,6 +6,7 @@ function FlashMessage() {
   const [showMsg, setShowMsg] = useState(false);
   const [animateClass, setAnimateClass] = useState("-translate-y-[100px]");
 
+  // defaults
   let text = "flash message text";
   let type = "success";
 
@@ -13,25 +14,29 @@ function FlashMessage() {
     [type, text] = flashMessageContent;
   }
 
+  // ============================================================================
+
   useEffect(() => {
     if (flashMessageContent.length > 0) {
-      setShowMsg(true);
+      setShowMsg(true); // do show msg
 
-      // show it
+      // show it / slide into view
       const timer1 = setTimeout(() => {
         setAnimateClass("translate-y-[0px]");
       }, 100);
 
-      // hide it
+      // hide it / slide out
       const timer2 = setTimeout(() => {
         setAnimateClass("-translate-y-[100px]");
       }, 4000);
 
+      // hide for good
       const timer3 = setTimeout(() => {
-        setShowMsg(false);
-        setFlashMessageContent([]);
+        setShowMsg(false); // hide msg
+        setFlashMessageContent([]); // reset msg type and text
       }, 4500);
 
+      // cleanup
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
@@ -39,6 +44,8 @@ function FlashMessage() {
       };
     }
   }, [flashMessageContent]);
+
+  // ============================================================================
 
   return showMsg ? (
     <div

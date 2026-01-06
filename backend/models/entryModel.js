@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 
+// Budgeter/Tracker Entry model
+
 const entrySchema = mongoose.Schema(
   {
     // id is auto-assigned
     userId: {
-      type: mongoose.Schema.ObjectId, // linking two tables
-      ref: "User",
+      type: mongoose.Schema.ObjectId, // connecting two tables (1)
+      ref: "User", // connecting two tables (2)
       required: true,
     },
     amount: {

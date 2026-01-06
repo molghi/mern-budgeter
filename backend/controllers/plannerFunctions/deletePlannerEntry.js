@@ -11,7 +11,7 @@ module.exports = async function deletePlannerEntry(req, res) {
       return res.status(400).json({ msg: "Entry not found." });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).json({ msg: "Some error occurred", error });
   }
 };

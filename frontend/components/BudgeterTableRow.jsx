@@ -41,13 +41,19 @@ function BudgeterTableRow({ data }) {
     income: "limegreen",
   };
 
+  // ============================================================================
+
+  // delete Budgeter/Tracker entry
   const deleteEntry = async () => {
+    // prompt
     const answer = confirm(
       `Are you sure you want to delete this entry?\n\n${currencySign}${data.amount} — ${
         categories.find((x) => x.includes(data.category))[0]
       }\n\nThis action cannot be undone.`
     );
+
     if (!answer) return;
+
     try {
       const response = await axios.delete(`http://localhost:8000/entries/${data._id}`, { withCredentials: true });
       if (response.status === 200) {
@@ -62,6 +68,8 @@ function BudgeterTableRow({ data }) {
       setFlashMessageContent(["error", "Unfortunately, there was an error."]);
     }
   };
+
+  // ============================================================================
 
   return (
     <tr className="entry text-sm text-[white] hover:bg-[#222] transition duration-300" data-id={data._id}>
@@ -98,6 +106,7 @@ function BudgeterTableRow({ data }) {
         >
           Edit
         </button>
+
         <button
           onClick={deleteEntry}
           className="opacity-50 hover:opacity-100 transition border border-[red] text-[red] px-2 rounded text-sm btn-delete"

@@ -1,8 +1,11 @@
 import axios from "axios";
 
+// ============================================================================
+
+// change username
 async function changeUsername(setUsername, setFlashMessageContent) {
   let answer = prompt("Enter your new username");
-  if (!answer || answer.trim().length < 2) return;
+  if (!answer || answer.trim().length < 2) return; // lil validation
 
   try {
     const response = await axios.post(
@@ -10,23 +13,19 @@ async function changeUsername(setUsername, setFlashMessageContent) {
       { newUsername: answer.trim() },
       { withCredentials: true }
     );
+
     if (response.status === 200) {
       setFlashMessageContent(["success", "Username updated!"]);
       setUsername(answer.trim());
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
 // ============================================================================
 
-function changeWeekStart(setWeekStartsOnMon) {
-  // setWeekStartsOnMon;
-}
-
-// ============================================================================
-
+// change currency sign
 function changeCurrencySign(setCurrencySign, setFlashMessageContent) {
   const allowedCurrencies = [
     { label: "$", value: "USD" },
@@ -47,12 +46,14 @@ function changeCurrencySign(setCurrencySign, setFlashMessageContent) {
     // { label: "KZT", value: "KZT" },
   ];
 
+  // prompt
   let answer = prompt(
     `Enter new currency sign\n\nAllowed options: ${allowedCurrencies.map((x) => x.label).join(", ")}.`
   );
 
   if (!answer || !answer.trim()) return;
 
+  // case: entered currency is not in 'allowedCurrencies'
   if (
     !allowedCurrencies
       .map((x) => [x.label, x.value])
@@ -64,9 +65,9 @@ function changeCurrencySign(setCurrencySign, setFlashMessageContent) {
 
   setCurrencySign(answer.trim());
   setFlashMessageContent(["success", "Currency sign changed!"]);
-  localStorage.setItem("budgeter_currency_sign", JSON.stringify(answer.trim()));
+  localStorage.setItem("budgeter_currency_sign", JSON.stringify(answer.trim())); // persist change, remember
 }
 
 // ============================================================================
 
-export { changeUsername, changeWeekStart, changeCurrencySign };
+export { changeUsername, changeCurrencySign };

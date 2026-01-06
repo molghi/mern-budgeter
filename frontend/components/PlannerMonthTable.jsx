@@ -10,8 +10,6 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
     plannerEntries,
     setHighlightedDay,
     userBalance,
-    lastMonthRemains,
-    setLastMonthRemains,
     monthsPureRemains,
     setPlannerForm,
     setPlannerItemInEdit,
@@ -22,13 +20,15 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
     shownMainBlock,
     setIsLoading,
   } = useContext(context);
+
   const [thisMonthEntries, setThisMonthEntries] = useState([]);
   const [thisMonthRemains, setThisMonthRemains] = useState(0);
-  let wasRowDoubleClicked = false;
+  let wasRowDoubleClicked = false; // for distinguishing between Edit and Delete events
 
   // ============================================================================
 
   useEffect(() => {
+    // filter and get only this month's entries
     const neededEntries = plannerEntries.filter((el) => {
       const eventMonth = new Date(el.date).getMonth() + 1;
       const eventYear = new Date(el.date).getFullYear();
@@ -40,6 +40,7 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
 
   // ============================================================================
 
+  // for the table under month: get when the event was/will be
   const howManyDays = (str) => {
     const nowDayTimestamp = new Date().setHours(0, 0, 0, 0);
     const thenDayTimestamp = new Date(str).setHours(0, 0, 0, 0);
@@ -50,27 +51,34 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
       // it's in the future
       if (numOfDays < 8) {
         return "in " + numOfDays + ` ${numOfDays > 1 ? "days" : "day"}`;
-      } else return "in " + numOfWeeks + ` ${numOfWeeks > 1 ? "weeks" : "week"}`;
+      } else {
+        return "in " + numOfWeeks + ` ${numOfWeeks > 1 ? "weeks" : "week"}`;
+      }
     } else {
       // it's in the past
       if (numOfDays < 8) {
         return numOfDays + ` ${numOfDays > 1 ? "days" : "day"} ago`;
-      } else return numOfWeeks + ` ${numOfWeeks > 1 ? "weeks" : "week"} ago`;
+      } else {
+        return numOfWeeks + ` ${numOfWeeks > 1 ? "weeks" : "week"} ago`;
+      }
     }
   };
 
   // ============================================================================
 
+  // hover over table row and highlight calendar day
   const hoverOverRow = (e) => {
     setHighlightedDay(e.target.closest("tr").dataset.date);
   };
 
+  // hover out table row and de-highlight highlighted calendar day
   const hoverOutRow = (e) => {
     setHighlightedDay("");
   };
 
   // ============================================================================
 
+  // show edit form
   const showEdit = (e) => {
     setTimeout(() => {
       if (!wasRowDoubleClicked) {
@@ -82,33 +90,41 @@ function PlannerMonthTable({ monthIndex, monthToRender, yearToRender, howManyMon
           title: e.target.closest("tr").querySelector("td:nth-child(1)").textContent.trim(),
         });
       }
-    }, 200); // small timeout to detect if there was a double click
+    }, 200); // small timeout to detect if there was a double click (deletion event)
   };
 
   // ============================================================================
 
+  // deletion event
   const promptDeletion = async (e) => {
-    wasRowDoubleClicked = true;
+    wasRowDoubleClicked = true; // cancel 'show edit form' event
+
+    // prompt deletion
     const answer = confirm(
       `Are you sure you want to delete this entry?\n
 Title: ${e.target.closest("tr").querySelector("td:nth-child(1)").textContent.trim()}
 When: ${e.target.closest("tr").dataset.date}
 Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.trim()}`
     );
+
     if (!answer) return;
+
     try {
       setIsLoading(true);
+
       const response = await axios.delete("http://localhost:8000/plannerentries", {
         data: { id: e.target.closest("tr").dataset.entryId },
         withCredentials: true,
       });
+
       if (response.status === 200) {
         setFlashMessageContent(["success", "Entry deleted!"]);
-        setPlannerForm(null);
+        setPlannerForm(null); // hide planner event form
         const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
         setPlannerEntries(allPlannerEntries.data.documents);
         setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
       }
+
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -119,7 +135,7 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
 
   return (
     <table className="min-w-full border border-gray-700 text-white relative">
-      {/* headers */}
+      {/* Table headers */}
       <thead className="bg-gray-800">
         <tr className="text-sm">
           <th className="px-3 py-2 text-left border-b border-gray-600">Title</th>
@@ -128,9 +144,9 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
         </tr>
       </thead>
 
-      {/* rows */}
+      {/* Render rows */}
       <tbody className="bg-gray-900">
-        {/* show loading spinner */}
+        {/* Show loading spinner */}
         {isLoading && shownMainBlock === 1 && (
           <tr>
             <td>
@@ -141,10 +157,10 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
           </tr>
         )}
 
-        {/* render current balance in first month */}
+        {/* Render current balance in first month as first row */}
         {monthIndex === 0 && (
           <tr
-            className="text-sm text-[gold] border-b border-gray-700"
+            className="text-[12px] xl:text-sm text-[gold] border-b border-gray-700"
             title="Change this row's value in the Current Balance form below"
           >
             <td className="px-3 py-2">Balance</td>
@@ -156,21 +172,24 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
           </tr>
         )}
 
-        {/* render entries */}
-        {thisMonthEntries.map((entry, i) => (
+        {/* Render this month's entries */}
+        {thisMonthEntries.map((entry) => (
           <tr
+            key={entry._id}
             onClick={showEdit}
             onDoubleClick={promptDeletion}
             data-entry-id={entry._id}
             data-date={entry.date}
-            key={entry._id}
-            className={`border-b border-gray-700 text-sm transition duration-300 hover:bg-black cursor-pointer active:bg-[#222] ${
+            className={`border-b border-gray-700 text-[12px] xl:text-sm transition duration-300 hover:bg-black cursor-pointer active:bg-[#222] ${
               entry.amount > 0 ? "text-[limegreen]" : "text-[coral]"
             }`}
             onMouseEnter={hoverOverRow}
             onMouseLeave={hoverOutRow}
           >
+            {/* Entry title */}
             <td className="px-3 py-2">{entry.title}</td>
+
+            {/* Entry amount */}
             <td className="px-3 py-2">
               {entry.amount > 0 ? (
                 <>
@@ -190,13 +209,15 @@ Amount: ${e.target.closest("tr").querySelector("td:nth-child(2)").textContent.tr
                 </>
               )}
             </td>
-            <td className="px-3 py-2 whitespace-nowrap" title={entry.date}>
+
+            {/* Entry date/when */}
+            <td className="px-3 py-2 xl:whitespace-nowrap" title={entry.date}>
               {howManyDays(entry.date)}
             </td>
           </tr>
         ))}
 
-        {/* render remains */}
+        {/* Render remains as last row */}
         <tr
           data-value={thisMonthRemains}
           className="text-sm bg-gray-800"

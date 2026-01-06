@@ -5,11 +5,11 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const router = require("./routes/routes");
 
-const app = express();
-dotenv.config({ path: "../.env" });
-const PORT = process.env.BACKEND_PORT || 8080;
+const app = express(); // init express
+dotenv.config({ path: "../.env" }); // bring in .env
+const PORT = process.env.BACKEND_PORT || 8080; // establish port
 
-// conn to db
+// connect to db
 mongoose
   .connect(process.env.MONGODB_CONN_STRING)
   .then(() => console.log("✅ db conn success"))
@@ -28,7 +28,7 @@ app.use(
 // establish routes
 app.use("/", router);
 
-// run server
+// run server on port
 app.listen(PORT, () => {
   console.log(`server active, port ${PORT}... 👂`);
 });

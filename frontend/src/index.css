@@ -1,3 +1,5 @@
+/* input calendar picker element */
+
 /* Chrome, Edge, Safari */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: brightness(0) invert(1); /* makes it white */
@@ -7,6 +9,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.6;
 }
+
+/* ========================================== */
+
+/* header */
 
 .dropdown-box:hover .dropdown-list {
   opacity: 1;

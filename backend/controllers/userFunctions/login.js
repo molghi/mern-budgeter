@@ -24,11 +24,10 @@ module.exports = async function logIn(req, res) {
     const passwordsMatch = await bcrypt.compare(password, foundUser.password);
 
     if (!passwordsMatch) {
-      // if passwords don't match, return error
-      return res.status(400).json({ msg: "Invalid credentials." });
+      return res.status(400).json({ msg: "Invalid credentials." }); // if passwords don't match, return error
     }
 
-    // if passwords match, sign jwt and return success
+    // if passwords match, sign jwt and return success (just like in signup)
     const token = jwt.sign(
       {
         id: foundUser._id,

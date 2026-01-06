@@ -3,9 +3,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 module.exports = async function signUp(req, res) {
-  // get sent data
+  // get submitted data
   const { email, password, passwordConfirm } = req.body;
 
+  // pre-validate
   if (!email.trim() || !password.trim() || !passwordConfirm.trim()) {
     return res.status(400).json({ msg: "Request body incomplete. Required: email, password, password confirmation." });
   }
@@ -26,18 +27,19 @@ module.exports = async function signUp(req, res) {
   }
 
   try {
-    // compose object for insertion
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 = salt rounds
+    // compose object for db insertion
+    const hashedPassword = await bcrypt.hash(password, 10); // hash password; 10 = salt rounds
+
     const userData = {
       name: email.trim().split("@")[0], // slice name out of email
       email: email.trim(),
-      password: hashedPassword, // hash pw
+      password: hashedPassword,
     };
 
-    // db insert: need name,email,password
+    // db insert
     const createdUser = await userModel.create(userData);
 
-    // to log in as well, sign jwt and send it thru httpOnly
+    // to log in as well, sign jwt and send it with httpOnly cookie
     const token = jwt.sign(
       {
         id: createdUser._id,

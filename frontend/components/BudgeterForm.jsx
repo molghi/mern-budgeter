@@ -17,6 +17,7 @@ function BudgeterForm() {
     setTotalIncome,
     setTotalsPerCategory,
   } = useContext(context);
+
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(
@@ -31,6 +32,7 @@ function BudgeterForm() {
 
   // ============================================================================
 
+  // form config
   const formFields = [
     { name: "Amount", label: "amount", required: true, type: "input", subtype: "number", placeholder: "Enter amount" },
     { name: "Category", label: "category", required: true, type: "select", subtype: "", placeholder: "" },
@@ -65,6 +67,7 @@ function BudgeterForm() {
 
   // ============================================================================
 
+  // getter/setter functions
   const returnValue = (label) => {
     if (label === "amount") return amount;
     if (label === "category") return category;
@@ -82,13 +85,16 @@ function BudgeterForm() {
 
   useEffect(() => {
     if (itemInEdit) {
+      // if edit mode, pre-fill fields
       setMode("Edit");
       setAmount(itemInEdit.amount);
       setCategory(itemInEdit.category);
       setDate(itemInEdit.date);
       setNote(itemInEdit.note);
     }
+
     if (itemInEdit === null) {
+      // if add mode, clear/reset fields
       setMode("Add");
       setAmount("");
       setCategory("");
@@ -97,9 +103,11 @@ function BudgeterForm() {
           .getDate()
           .toString()
           .padStart(2, "0")}`
-      );
+      ); // set current date
       setNote("");
     }
+
+    // always focus first input
     firstInputRef.current.focus();
   }, [itemInEdit, budgeterEntries]);
 
@@ -109,6 +117,7 @@ function BudgeterForm() {
     <>
       <div className="flex-1 w-full md:w-auto md:flex-[3] border border-[gray] rounded-xl overflow-hidden self-start">
         <div className="p-4 pb-8 bg-black text-[white] rounded">
+          {/* Title */}
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">{mode} Entry</h4>
 
           <form
@@ -135,7 +144,7 @@ function BudgeterForm() {
               )
             }
           >
-            {/* Iterate thru & create form fields */}
+            {/* Iterate thru form config & create form fields */}
             {formFields.map((entry, index) => (
               <div key={index}>
                 <label htmlFor={entry.label} className="block text-[gray] font-bold">
@@ -176,6 +185,7 @@ function BudgeterForm() {
               </div>
             ))}
 
+            {/* Action btn */}
             <button
               className={`w-full col-span-full py-2 border transition duration-300 rounded hover:text-black ${
                 mode === "Add"

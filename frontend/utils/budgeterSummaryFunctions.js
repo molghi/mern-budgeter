@@ -1,9 +1,14 @@
 import axios from "axios";
 
+// ============================================================================
+
+// change period in Summary block
 const changePeriod = (flag, period, setPeriod) => {
   const [month, year] = period.split("-").map((x) => +x);
+
   let newMonth = month;
   let newYear = year;
+
   if (flag === "prev") {
     // decrement month
     newMonth = month - 1;
@@ -23,28 +28,34 @@ const changePeriod = (flag, period, setPeriod) => {
     newMonth = new Date().getMonth() + 1;
     newYear = new Date().getFullYear();
   }
+
   setPeriod(`${newMonth}-${newYear}`);
 };
 
 // ============================================================================
 
+// fetch totals for selected period
 const fetchPeriodTotals = async (period, setTotalExpenses, setTotalIncome, setTotalsPerCategory, setIsLoading) => {
   setIsLoading(true);
   const response = await axios.get(`http://localhost:8000/summary?period=${period}`, { withCredentials: true });
   setIsLoading(false);
+
   if (response.status === 200) {
+    // update total expenses
     if (response.data.totalExpenses.length > 0) {
       setTotalExpenses(response.data.totalExpenses[0].totalAmount);
     } else {
       setTotalExpenses(0);
     }
 
+    // update total income
     if (response.data.totalIncome.length > 0) {
       setTotalIncome(response.data.totalIncome[0].totalAmount);
     } else {
       setTotalIncome(0);
     }
 
+    // update totals per category
     if (response.data.categoryExpenses.length > 0) {
       setTotalsPerCategory(response.data.categoryExpenses);
     } else {

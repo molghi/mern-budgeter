@@ -21,7 +21,7 @@ module.exports = async function updateBudgeterEntry(req, res) {
 
       return res.status(200).json({ msg: "Update successful!", document: response });
     } else {
-      return res.status(400).json({ msg: "Some error occurred" });
+      return res.status(400).json({ msg: "Entry doesn't exist." });
     }
   } catch (error) {
     return res.status(400).json({ msg: "Some error occurred", error });

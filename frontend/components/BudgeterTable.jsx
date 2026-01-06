@@ -12,6 +12,7 @@ function BudgeterTable() {
     <>
       <div className="flex-1 w-full md:w-auto md:flex-[7] relative">
         <div className="p-4 pt-0 bg-black text-[white] rounded overflow-x-auto">
+          {/* Title */}
           <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">
             Entries {budgeterEntries && budgeterEntries.length > 0 && `(${budgeterEntries.length})`}
           </h4>
@@ -19,7 +20,7 @@ function BudgeterTable() {
           <table className="w-full border border-[gray] text-[gray] table-auto min-w-full">
             <thead className="bg-black/80 border border-[gray]">
               <tr>
-                {/* Table headers */}
+                {/* Render table headers/column names */}
                 {tableColumns.map((x, i) => (
                   <th key={i} className="py-2 px-3 text-green-500 text-left">
                     {x}
@@ -29,7 +30,7 @@ function BudgeterTable() {
             </thead>
 
             <tbody className="divide-y divide-[gray]">
-              {/* Output entries */}
+              {/* Output entries or 'no entries' msg */}
               {budgeterEntries && budgeterEntries.length > 0 ? (
                 budgeterEntries.map((item) => <BudgeterTableRow key={item._id} data={item} />)
               ) : (

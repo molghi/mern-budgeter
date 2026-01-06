@@ -12,7 +12,7 @@ const userModel = mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // one email can be used only once
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"], // check that submitted email is valid email
     },
     password: {

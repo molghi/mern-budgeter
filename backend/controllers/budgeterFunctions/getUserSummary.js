@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const entryModel = require("../../models/entryModel");
 
 module.exports = async function getUserSummary(req, res) {
-  if (!req.query.period.trim()) return res.status(400).json({ msg: "No period passed" });
+  if (!req.query.period.trim()) return res.status(400).json({ msg: "No period passed." });
 
   const [month, year] = req.query.period.split("-").map((x) => +x);
-  if (isNaN(month) || isNaN(year)) return res.status(400).json({ msg: "Period wasn't correctly formatted" });
+  if (isNaN(month) || isNaN(year)) return res.status(400).json({ msg: "Period passed incorrectly." });
 
   // for the selected month-year period, get these things:
 
@@ -64,7 +64,7 @@ module.exports = async function getUserSummary(req, res) {
 
   // ============================================================================
 
-  // Distribution of Expenses by Category:  get an array/obj of: category, its total sum
+  // Distribution of Expenses by Category:  get an array or obj of: category and its total sum, for each category
   const categoryExpenses = await entryModel.aggregate([
     {
       $addFields: {

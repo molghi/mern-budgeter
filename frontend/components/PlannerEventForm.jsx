@@ -15,7 +15,7 @@ function PlannerEventForm({ howManyMonths }) {
     currencySign,
     setIsLoading,
   } = useContext(context);
-  // plannerForm values: null (do not show), 'add', 'edit'.
+  // plannerForm values: null (do not show form), 'add', 'edit'.
 
   const firstFieldToFocusRef = useRef(null);
   const [when, setWhen] = useState(clickedDate || "");
@@ -23,23 +23,30 @@ function PlannerEventForm({ howManyMonths }) {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
+  // ============================================================================
+
   useEffect(() => {
     setWhen(clickedDate);
+
     if (plannerForm === "edit") {
-      const pureAmount = +plannerItemInEdit.amount.split(currencySign)[1];
-      const isExpense = plannerItemInEdit.amount[0] === "-";
+      // if edit mode
+      const pureAmount = +plannerItemInEdit.amount.split(currencySign)[1]; // slice out only the number
+      const isExpense = plannerItemInEdit.amount[0] === "-"; // boolean
       setWhen(plannerItemInEdit.when);
       setAmount(isExpense ? pureAmount * -1 : pureAmount);
       setTitle(plannerItemInEdit.title);
     }
-    firstFieldToFocusRef.current.focus();
+
+    firstFieldToFocusRef.current.focus(); // focus first field
   }, [clickedDate, plannerItemInEdit]);
 
   // ============================================================================
 
+  // on form submit
   const submitForm = (e, flag) => {
     e.preventDefault();
 
+    // if adding entry
     if (flag === "add") {
       submitPlannerEventForm(
         e,
@@ -57,6 +64,8 @@ function PlannerEventForm({ howManyMonths }) {
         setIsLoading
       );
     }
+
+    // if editing entry
     if (flag === "edit") {
       submitPlannerEventForm(
         e,
@@ -83,17 +92,18 @@ function PlannerEventForm({ howManyMonths }) {
       onSubmit={(e) => submitForm(e, plannerForm)}
       className={`flex-1 bg-gray-800 p-4 rounded-md text-white relative`}
     >
-      {/* title */}
-      <h3 className="text-lg mb-1 flex gap-3">
+      {/* Title */}
+      <h3 className="text-lg mb-1 flex gap-3 lg:flex-row flex-col">
         <span className="font-bold">
           {plannerForm.slice(0, 1).toUpperCase() + plannerForm.slice(1)} Expense / Income
         </span>
+        {/* Hint */}
         <span className="opacity-50 text-[14px] transition duration-300 hover:opacity-100">
           (Amount: expenses are negative; income is positive)
         </span>
       </h3>
 
-      {/* close form btn */}
+      {/* Close form btn */}
       <button
         type="button"
         className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full font-bold transition duration-300 bg-red-600 text-white opacity-50 hover:opacity-100"
@@ -114,8 +124,8 @@ function PlannerEventForm({ howManyMonths }) {
       </button>
 
       {/* FIELDS */}
-      <div className="grid grid-cols-4 gap-4 items-end">
-        {/* when field */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        {/* When field */}
         <div>
           <span className="inline-block text-[gray] text-sm mb-1 italic">When</span>
           <input
@@ -128,7 +138,7 @@ function PlannerEventForm({ howManyMonths }) {
           />
         </div>
 
-        {/* amount field */}
+        {/* Amount field */}
         <div>
           <span className="inline-block text-[gray] text-sm mb-1 italic">Amount</span>
           <input
@@ -142,7 +152,7 @@ function PlannerEventForm({ howManyMonths }) {
           />
         </div>
 
-        {/* title field */}
+        {/* Title field */}
         <div>
           <span className="inline-block text-[gray] text-sm mb-1 italic">Title</span>
           <input
@@ -155,17 +165,17 @@ function PlannerEventForm({ howManyMonths }) {
           />
         </div>
 
-        {/* action btn */}
+        {/* Action btn */}
         <button
           type="submit"
-          className={`w-full hover:opacity-70 py-2 rounded font-bold transition duration-200 min-h-[42px] ${
+          className={`mt-3 sm:mt-0 w-full hover:opacity-70 py-2 rounded font-bold transition duration-200 min-h-[42px] ${
             plannerForm === "add" ? "bg-blue-600" : "bg-green-600"
           }`}
         >
           {plannerForm.slice(0, 1).toUpperCase() + plannerForm.slice(1)} Event
         </button>
 
-        {/* output errors */}
+        {/* Output validation errors */}
         {error && (
           <div className="mt-3 text-[red]">
             <span className="font-bold">Error:</span> {error}

@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
+// Planner Entry model
+
 const plannerEntrySchema = mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
+      type: mongoose.Schema.ObjectId, // connecting two tables (1)
+      ref: "User", // connecting two tables (2)
       required: true,
     },
     date: {

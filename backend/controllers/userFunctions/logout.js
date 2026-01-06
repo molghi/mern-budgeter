@@ -1,5 +1,5 @@
 module.exports = async function logOut(req, res) {
-  // clear cookie
+  // clear that httpOnly cookie
   res.cookie("token", "", {
     httpOnly: true,
     secure: false,

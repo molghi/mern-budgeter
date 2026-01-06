@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { context } from "../context/MyContext";
+import { changeUsername, changeCurrencySign } from "../utils/headerFunctions";
 import axios from "axios";
-import { changeUsername, changeWeekStart, changeCurrencySign } from "../utils/headerFunctions";
 
 function Header() {
   const {
@@ -18,6 +18,7 @@ function Header() {
     setCurrencySign,
   } = useContext(context);
 
+  // header bar dropdown list elements
   const preferencesItems = ["Change Username", "Change Week Start", "Change Currency Sign"];
   const preferencesItemsClarifiers = [
     "Username displayed at the center of this block",
@@ -25,9 +26,13 @@ function Header() {
     "",
   ];
 
+  // ============================================================================
+
+  // log out action
   const logOut = async () => {
     try {
       const response = await axios.get("http://localhost:8000/logout", { withCredentials: true });
+
       if (response.status === 200 && response.data.msg === "User logged out!") {
         setFlashMessageContent(["success", "User logged out!"]);
         setIsLoggedIn(false);
@@ -35,13 +40,14 @@ function Header() {
         setUserEmail("");
       }
     } catch (error) {
-      console.log("OOPS!", error);
+      console.error("OOPS!", error);
       setFlashMessageContent(["error", "Some error happened!"]);
     }
   };
 
   // ============================================================================
 
+  // perform preference action (in header bar)
   const preferenceAction = (actionString) => {
     if (actionString === preferencesItems[0]) {
       // Change Username
@@ -50,7 +56,7 @@ function Header() {
     if (actionString === preferencesItems[1]) {
       // Change Week Start
       setWeekStartsOnMon((prev) => {
-        localStorage.setItem("budgeter_week_starts_on_mon", JSON.stringify(!prev));
+        localStorage.setItem("budgeter_week_starts_on_mon", JSON.stringify(!prev)); // persist change
         return !prev;
       });
     }
@@ -63,6 +69,7 @@ function Header() {
   // ============================================================================
 
   useEffect(() => {
+    // fetch username from db
     const getUserName = async () => {
       try {
         const response = await axios.get("http://localhost:8000/username", { withCredentials: true });
@@ -70,20 +77,27 @@ function Header() {
           setUsername(response.data.username);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     getUserName();
 
+    // fetch currency sign (user preference) from LS
     const currencySignFromLS = localStorage.getItem("budgeter_currency_sign");
     if (currencySignFromLS) {
       setCurrencySign(JSON.parse(currencySignFromLS));
     }
+
+    // fetch last selected main block (user preference: Tracker or Planner) from LS
+    const mainBlockLastChoiceFromLS = localStorage.getItem("budgeter_last_selected");
+    if (mainBlockLastChoiceFromLS) {
+      setShownMainBlock(+JSON.parse(mainBlockLastChoiceFromLS));
+    }
   }, []);
 
   useEffect(() => {
-    // change doc title based on which block is showing
-    document.title = `Your Budget ${shownMainBlock === 0 ? "Tracker" : "Planner"}`;
+    document.title = `Your Budget ${shownMainBlock === 0 ? "Tracker" : "Planner"}`; // change doc title based on which block is showing, Tracker or Planner
+    localStorage.setItem("budgeter_last_selected", JSON.stringify(shownMainBlock)); // persist/memorize choice
   }, [shownMainBlock]);
 
   // ============================================================================
@@ -91,8 +105,8 @@ function Header() {
   return (
     <header className="bg-gray-900 text-white">
       <div className="container mx-auto flex items-center justify-between py-4 px-3 md:px-6 gap-4 md:flex-nowrap flex-wrap">
-        {/* Logo */}
-        <div className="text-xl  lg:text-2xl font-bold">
+        {/* Logo Text */}
+        <div className="text-xl lg:text-2xl font-bold">
           💰 Your Budget <span className="text-green-300">{shownMainBlock === 0 ? "Tracker" : "Planner"}</span>
         </div>
 
@@ -100,13 +114,13 @@ function Header() {
         {isLoggedIn && username && (
           <div
             title={userEmail && `Logged in as ${userEmail}`}
-            className="text-sm transition duration-300 opacity-50 hover:opacity-100 uppercase"
+            className="text-[11px] lg:text-sm transition duration-300 opacity-50 hover:opacity-100 uppercase"
           >
             {username.toUpperCase()}'s Dashboard
           </div>
         )}
 
-        {/* Btns */}
+        {/* Action Btns */}
         <div className="flex gap-4 sm:flex-nowrap flex-wrap">
           {isLoggedIn ? (
             <>
@@ -132,6 +146,7 @@ function Header() {
                 </button>
               )}
 
+              {/* Preference btns */}
               <div className="bg-purple-700 hover:bg-purple-800 transition duration-200 text-white font-bold py-2 px-4 rounded cursor-pointer relative dropdown-box sm:text-md text-sm">
                 <span className="dropdown-title flex items-center gap-1">
                   Preferences
@@ -154,6 +169,7 @@ function Header() {
                 </div>
               </div>
 
+              {/* Log out */}
               <button
                 onClick={logOut}
                 className="bg-gray-700 transition duration-200 hover:opacity-100 opacity-60 text-white font-bold py-2 px-4 rounded whitespace-nowrap sm:text-md text-sm"

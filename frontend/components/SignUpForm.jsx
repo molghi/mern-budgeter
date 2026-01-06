@@ -10,8 +10,12 @@ function SignUpForm() {
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef();
 
+  // ============================================================================
+
+  // sign up action
   const signUp = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(
         "http://localhost:8000/signup",
@@ -19,6 +23,7 @@ function SignUpForm() {
         { withCredentials: true }
       );
       // axios.defaults.withCredentials = true;
+
       if (response.status === 200 || response.status === 201) {
         setErrorMsg("");
         setFlashMessageContent(["success", "User profile created!"]);
@@ -32,15 +37,16 @@ function SignUpForm() {
     }
   };
 
+  // ============================================================================
+
   useEffect(() => {
-    inputRef.current.focus();
+    inputRef.current.focus(); // focus first input
   }, []);
 
   return (
     <>
-      {/* Form */}
       <form className="flex flex-col gap-4" onSubmit={signUp}>
-        {/* Email */}
+        {/* Email field */}
         <input
           ref={inputRef}
           required
@@ -52,7 +58,7 @@ function SignUpForm() {
           className="px-4 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-white transition duration-200"
         />
 
-        {/* Password */}
+        {/* Password field */}
         <input
           required
           value={password}
@@ -62,7 +68,7 @@ function SignUpForm() {
           className="px-4 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-white transition duration-200"
         />
 
-        {/* Confirm Password */}
+        {/* Confirm Password field */}
         <input
           required
           value={passwordConfirm}
@@ -72,7 +78,7 @@ function SignUpForm() {
           className="px-4 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-white transition duration-200"
         />
 
-        {/* Btn */}
+        {/* Action Btn */}
         <button
           type="submit"
           className="block mt-4 px-4 py-2 bg-green-500 text-gray-900 font-semibold rounded transition duration-200 hover:opacity-60 active:opacity-40"
@@ -80,7 +86,7 @@ function SignUpForm() {
           Sign Up
         </button>
 
-        {/* Validation Errors */}
+        {/* Output Validation Errors */}
         {errorMsg && (
           <div className="mt-3 text-[red]">
             <span className="font-bold">Error:</span> {errorMsg}

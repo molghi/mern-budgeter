@@ -15,8 +15,11 @@ function BudgeterSummary() {
     budgeterEntries,
     shownMainBlock,
   } = useContext(context);
+
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+
+  // ============================================================================
 
   const categories = [
     ["Groceries", "groceries"],
@@ -54,7 +57,10 @@ function BudgeterSummary() {
     income: "limegreen",
   };
 
+  // ============================================================================
+
   useEffect(() => {
+    // fetch totals for the selected period
     fetchPeriodTotals(period, setTotalExpenses, setTotalIncome, setTotalsPerCategory, setIsLoading);
   }, [budgeterEntries, period]);
 
@@ -63,6 +69,7 @@ function BudgeterSummary() {
   return (
     <div className="max-w-5xl mx-auto border border-[gray] rounded-xl overflow-hidden mt-12 mb-8 relative">
       <div className="p-4 bg-black text-[white] rounded">
+        {/* Title */}
         <h4 className="mb-3 text-center text-2xl font-bold text-[khaki]">Spending Summary</h4>
 
         {/* Show loading spinner on fetching data */}
@@ -95,7 +102,7 @@ function BudgeterSummary() {
           <div>
             <div className="mb-2 text-center font-bold text-[#999]">Select Period:</div>
             <div className="flex items-center gap-3">
-              {/* Go prev period */}
+              {/* Go to prev period */}
               <button
                 onClick={() => changePeriod("prev", period, setPeriod)}
                 className="rounded bg-[silver] pl-2 pr-2.5 text-black transition duration-200 hover:opacity-60 font-bold active:opacity-40"
@@ -109,7 +116,7 @@ function BudgeterSummary() {
                 className="cursor-pointer transition duration-200 hover:opacity-70 active:opacity-50"
                 title="Go to present period"
               >{`Month ${period.split("-")[0]} of ${period.split("-")[1]}`}</span>
-              {/* Go next period */}
+              {/* Go to next period */}
               <button
                 onClick={() => changePeriod("next", period, setPeriod)}
                 className="rounded bg-[silver] pr-2 pl-2.5 text-black transition duration-200 hover:opacity-60 font-bold active:opacity-40"

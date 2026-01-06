@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const userModel = require("../../models/userModel");
 
 module.exports = async function updateCurrentBalance(req, res) {
+  // check existence
   if (!req.body.currentBalance) {
     return res.status(400).json({ msg: "No balance submitted." });
   }
@@ -20,11 +21,7 @@ module.exports = async function updateCurrentBalance(req, res) {
   }
 
   // query db to update balance
-  const updatedUser = await userModel.findByIdAndUpdate(
-    new mongoose.Types.ObjectId(req.user.id),
-    { balance: newBalance },
-    { new: true }
-  );
+  const updatedUser = await userModel.findByIdAndUpdate(req.user.id, { balance: newBalance }, { new: true });
 
   // return res
   return res.status(200).json({ msg: "Balance updated!", balance: updatedUser.balance });

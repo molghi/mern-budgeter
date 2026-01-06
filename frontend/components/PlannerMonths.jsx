@@ -10,8 +10,8 @@ function PlannerMonths({ howManyMonths }) {
 
   return (
     <div className="mb-14">
-      {/* explainer text */}
-      <h3 className="text-white text-center mb-3">
+      {/* Explainer text under heading */}
+      <h3 className="text-white text-center mb-3 px-2">
         <span className="font-bold opacity-50">How It Works:</span> {` `}
         <span>
           Click a calendar day to <u>add</u> an entry. Click a table row to <u>edit</u>. Double-click a row to{" "}
@@ -19,11 +19,13 @@ function PlannerMonths({ howManyMonths }) {
         </span>
       </h3>
 
-      {/* months box */}
+      {/* Months container */}
       <div
-        className={`container mx-auto py-4 px-6 grid grid-cols-${howManyMonths} gap-${howManyMonths === 4 ? 8 : 14}`}
+        className={`container mx-auto py-4 px-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-${howManyMonths} gap-${
+          howManyMonths === 4 ? 8 : 14
+        }`}
       >
-        {/* render months */}
+        {/* Render each month */}
         {new Array(howManyMonths).fill(0).map((x, i) => (
           <PlannerMonth key={i} index={i} startPeriod={currentMonthYear} howManyMonths={howManyMonths} />
         ))}

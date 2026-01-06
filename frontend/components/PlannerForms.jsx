@@ -7,7 +7,7 @@ function PlannerForms({ howManyMonths }) {
   const { plannerForm } = useContext(context);
 
   return (
-    <div className="container mx-auto py-4 px-6 flex items-start gap-8 p-4">
+    <div className="container mx-auto py-4 px-6 flex md:flex-row flex-col items-start gap-8 p-4">
       {/* Current Balance Form */}
       <PlannerBalanceForm />
 

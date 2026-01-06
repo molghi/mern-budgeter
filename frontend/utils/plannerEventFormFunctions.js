@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getMonthsRemains } from "./plannerFunctions";
 
+// submit planner event form
 async function submitPlannerEventForm(
   e,
   mode,
@@ -18,36 +19,44 @@ async function submitPlannerEventForm(
 ) {
   e.preventDefault();
 
+  // if add mode
   if (mode === "add") {
     setIsLoading(true);
+
     const response = await axios.post(
       "http://localhost:8000/plannerentries",
       { when, amount, title },
       { withCredentials: true }
     );
+
     if (response.status === 200) {
       setFlashMessageContent(["success", "Entry added!"]);
       const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
       setPlannerEntries(allPlannerEntries.data.documents);
       setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
     }
+
     setIsLoading(false);
     setPlannerForm(null);
   }
 
+  // if edit mode
   if (mode === "edit") {
     setIsLoading(true);
+
     const response = await axios.patch(
       "http://localhost:8000/plannerentries",
       { entryId, when, amount, title },
       { withCredentials: true }
     );
+
     if (response.status === 200) {
       setFlashMessageContent(["success", "Entry updated!"]);
       const allPlannerEntries = await axios.get("http://localhost:8000/plannerentries", { withCredentials: true });
       setPlannerEntries(allPlannerEntries.data.documents);
       setMonthsPureRemains(getMonthsRemains(allPlannerEntries.data.documents, howManyMonths, userBalance));
     }
+
     setIsLoading(false);
     setPlannerForm(null);
   }

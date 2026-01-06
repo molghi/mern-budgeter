@@ -18,7 +18,6 @@ function App() {
     setIsLoggedIn,
     setUsername,
     setUserEmail,
-    setUserBalance,
   } = useContext(context);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ function App() {
     const getUserEntries = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/entries?period=${period}`, { withCredentials: true });
-        console.log("tracker:", response.data.documents);
         if (response.status === 200) {
           setBudgeterEntries(response.data.documents);
           setIsLoggedIn(true);
@@ -56,6 +54,7 @@ function App() {
           {/* if logged in and selected main block is Planner (1), show Planner */}
           {isLoggedIn && shownMainBlock === 1 && <Planner />}
         </main>
+
         <Footer />
 
         <FlashMessage />

@@ -66,7 +66,7 @@ module.exports = async function createBudgeterEntry(req, res) {
     const insertedDoc = await entryModel.create(newEntry);
 
     // return response
-    return res.status(200).json({ msg: "Good to go", document: insertedDoc });
+    return res.status(200).json({ msg: "Entry created!", document: insertedDoc });
   } catch (error) {
     console.error("OOPS!", error);
     return res.status(400).json({ msg: "Some error occurred", error });
