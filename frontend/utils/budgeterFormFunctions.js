@@ -45,7 +45,7 @@ const formSubmit = async (
 
   // compose obj
   const entry = {
-    amount: amount.trim(),
+    amount: amount.toString().trim(),
     category: categories.find((catItem) => catItem.includes(category))[1],
     date: date.trim(),
     note: note.trim(),
